@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  labels:
+    app: test-db 
+data:
+  POSTGRES_DB: testbase 
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  poststart.sh: |
+     #!/bin/bash
+     echo "Start init"
+     psql -h localhost -U postgres -c "create table if not exists patient (id text primary key not null, resource jsonb)"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-db 
+spec:
+  selector:
+    matchLabels:
+      app: test-db 
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: test-db 
+    spec:
+      containers:
+        - name: test-db 
+          image: postgres:latest
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+      #     volumeMounts:
+      #       - mountPath: /var/lib/postgresql/data
+      #         name: testbase 
+      # volumes:
+      #   - name: testbase
+      #     persistentVolumeClaim:
+      #       claimName: volume-pg-hs 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-db 
+  labels:
+    app: test-db 
+spec:
+  type: NodePort
+  ports:
+   - port: 5443
+     targetPort: 5432 
+  selector:
+   app: test-db 
+# ---
+# kind: PersistentVolume
+# apiVersion: v1
+# metadata:
+#   name: postgres-pv-volume
+#   labels:
+#     type: local
+#     app: test-db 
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteMany
+#   hostPath:
+#     path: "/mnt/data"
+# ---
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: postgres-pv-claim
+#   labels:
+#     app: test-db 
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 1Gi
