@@ -12,6 +12,13 @@ PGIMAGE    ?= postgres:latest
 
 repl:
 	rm -rf ./cpcache && clj -A:test:nrepl -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]"
+
+react-native:
+	cd ./mobile/MobileApp/ && react-native start
+
+app:
+	cd ./mobile/MobileApp/ && react-native run-android
+
 build:
 	clojure -A:build
 	mv target/app-1.0.0-SNAPSHOT-standalone.jar app.jar
