@@ -16,3 +16,41 @@ build.dev
 .lein-failures
 .nrepl-port
 .cpcache/
+
+# Android/IntelliJ
+#
+/mobile/MobileApp/build/
+/mobile/MobileApp/.idea
+/mobile/MobileApp/.gradle
+/mobile/MobileApp/local.properties
+/mobile/MobileApp/*.iml
+
+# node.js
+#
+/mobile/MobileApp/node_modules/
+/mobile/MobileApp/npm-debug.log
+/mobile/MobileApp/yarn-error.log
+
+# BUCK
+/mobile/MobileApp/buck-out/
+/mobile/MobileApp/\.buckd/
+/mobile/MobileApp/*.keystore
+/mobile/MobileApp/!debug.keystore
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+/mobile/MobileApp/*/fastlane/report.xml
+/mobile/MobileApp/*/fastlane/Preview.html
+/mobile/MobileApp/*/fastlane/screenshots
+
+# Bundle artifact
+/mobile/MobileApp/*.jsbundle
+
+# CocoaPods
+/mobile/MobileApp//ios/Pods/
+
