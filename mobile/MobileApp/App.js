@@ -19,11 +19,15 @@ import {
 
 import { TabView, SceneMap } from 'react-native-tab-view';
 
-const FirstRoute = () => (
+const NotificationScreen = () => (
   <View style={[styles.scene, { backgroundColor: '#ff4081' }]} />
 );
 
-const SecondRoute = () => (
+const HistoryScreen = () => (
+  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} />
+);
+
+const SettingsScreen = () => (
   <View style={[styles.scene, { backgroundColor: '#673ab7' }]} />
 );
 
@@ -32,13 +36,15 @@ const initialLayout = { width: Dimensions.get('window').width };
 const App: () => React$Node = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'first', title: 'Huy' },
-    { key: 'second', title: 'Sosi' },
+    { key: 'notifications', title: 'Notifications' },
+    { key: 'history', title: 'History' },
+    { key: 'settings', title: 'Settings' }
   ]);
  
   const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
+    notifications: NotificationScreen,
+    history: HistoryScreen,
+    settings: SettingsScreen 
   });
 
   return (
