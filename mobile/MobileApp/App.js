@@ -7,6 +7,7 @@ import {
   View,
   Text,
   StatusBar,
+  SectionList,
 } from 'react-native';
 
 import {
@@ -20,15 +21,28 @@ import {
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 const NotificationScreen = () => (
-  <View style={[styles.scene, { backgroundColor: '#ff4081' }]} />
+  <View style={[styles.scene, { backgroundColor: 'white' }]}>
+    <Text style={styles.screenBody}>
+      "Текст"
+    </Text>
+  </View>
+
 );
 
 const HistoryScreen = () => (
-  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} />
+  <View style={[styles.scene, { backgroundColor: 'white' }]}>
+    <Text style={styles.screenBody}>
+      "Текст"
+    </Text>
+  </View>
 );
 
 const SettingsScreen = () => (
-  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} />
+  <View style={[styles.scene, { backgroundColor: 'white' }]}>
+    <Text style={styles.screenBody}>
+      "Текст"
+    </Text>
+  </View>
 );
 
 const initialLayout = { width: Dimensions.get('window').width };
@@ -94,6 +108,11 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     textAlign: 'right',
   },
+  screenBody: {
+    fontSize: 18,
+    color: 'black',
+    padding: 24,
+  }
 });
 
 export default App;

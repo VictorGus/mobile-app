@@ -16,6 +16,9 @@ repl:
 react-native:
 	cd ./mobile/MobileApp/ && react-native start
 
+make deps:
+	cd ./mobile/MobileApp/ && yarn install && npm install
+
 app:
 	cd ./mobile/MobileApp/ && react-native run-android
 
