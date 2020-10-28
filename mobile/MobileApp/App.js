@@ -10,6 +10,8 @@ import {
   SectionList,
 } from 'react-native';
 
+import NotificationScreen from './Notification';
+
 import {
   Header,
   LearnMoreLinks,
@@ -19,15 +21,6 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { TabView, SceneMap } from 'react-native-tab-view';
-
-const NotificationScreen = () => (
-  <View style={[styles.scene, { backgroundColor: 'white' }]}>
-    <Text style={styles.screenBody}>
-      "Текст"
-    </Text>
-  </View>
-
-);
 
 const HistoryScreen = () => (
   <View style={[styles.scene, { backgroundColor: 'white' }]}>
