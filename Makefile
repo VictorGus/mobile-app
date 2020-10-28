@@ -14,13 +14,13 @@ repl:
 	rm -rf ./cpcache && clj -A:test:nrepl -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]"
 
 react-native:
-	cd ./mobile/MobileApp/ && react-native start
+	cd ./mobile/MobileApp/ && react-native start --port=8088
 
-make deps:
+deps:
 	cd ./mobile/MobileApp/ && yarn install && npm install
 
 app:
-	cd ./mobile/MobileApp/ && react-native run-android
+	cd ./mobile/MobileApp/ && react-native run-android --port=8088
 
 build:
 	clojure -A:build
