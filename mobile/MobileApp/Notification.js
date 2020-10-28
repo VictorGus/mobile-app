@@ -1,7 +1,7 @@
 
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import {ListItem} from 'react-native-elements'
+import {Card} from 'react-native-elements'
 
 const demoData = [
     {
@@ -18,15 +18,16 @@ const NotificationScreen = () => (
   <View>
         {
         demoData.map((el) => (
-        <ListItem bottomDivider>
-            <ListItem.Content>
-                <ListItem.Title>{el.title}</ListItem.Title>
+            <Card>
+                <Card.Title>
+                    {el.title + ", 25.10.2020 16:35"}
+                </Card.Title>
+                <Card.Divider/>
                 <Text>
                     {el.message}
                 </Text>
-            </ListItem.Content>
-        </ListItem>
-    ))
+            </Card>
+        ))
         }
   </View>
 );
