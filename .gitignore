@@ -1,5 +1,6 @@
 pom.xml
 pom.xml.asc
+.env
 *.jar
 *.class
 /ui/resources/public/js
@@ -24,6 +25,8 @@ build.dev
 /mobile/MobileApp/.gradle
 /mobile/MobileApp/local.properties
 /mobile/MobileApp/*.iml
+/mobile/MobileApp/package-lock.json
+/mobile/MobileApp/yarn.lock
 
 # node.js
 #
