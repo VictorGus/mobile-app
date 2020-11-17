@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity} from 'react-native';
 import { Card, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import IconFA from 'react-native-vector-icons/FontAwesome5'; 
+import FileSystem from 'react-native-fs'
+import SegmentedControlTab from 'react-native-segmented-control-tab'
 
 const demoData = [
     {
@@ -32,7 +34,7 @@ const demoData = [
 ]
 
 function NotificationIcon(props) {
-    switch(props.category) {
+    switch (props.category) {
         case "pills":
             return <IconFA name="pills" size={29} color="#2396d9" />
 
@@ -53,64 +55,94 @@ function NotificationIcon(props) {
     }
 }
 
-const NotificationScreen = () => (
-    <View style={{
-        flex: 1
+function testG() {
+    return 1;
+}
+
+const UpcomingNotifications = () => (
+    <ScrollView style={{
+        margin: 10,
+        marginTop: 5,
+        marginBottom: 15
     }}>
-        <ScrollView style={{
-            margin: 10,
-            marginBottom: 15
-        }}>
-            {
-                demoData.map((el, i) => (
-                    <Card key={i}>
+        {
+            demoData.map((el, i) => (
+                <Card key={i}>
+                    <View style={{
+                        flexDirection: 'row',
+                        flexGrow: 2,
+                        marginBottom: 10,
+                        alignContent: 'space-between'
+                    }}>
+                        <Text>
+                            <NotificationIcon category={el.category} />
+                        </Text>
                         <View style={{
-                            flexDirection: 'row',
-                            flexGrow: 2,
-                            marginBottom: 10,
-                            alignContent: 'space-between'
+                            marginLeft: 5,
+                            marginTop: 5,
+                            flex: 1
                         }}>
-                            <Text>
-                                <NotificationIcon category={el.category} />
-                            </Text>
-                            <View style={{
-                                marginLeft: 5,
-                                marginTop: 5,
-                                flex: 1
+                            <Text style={{
+                                fontWeight: 'bold',
+                                fontSize: 19
                             }}>
-                                <Text style={{
-                                    fontWeight: 'bold',
-                                    fontSize: 19
-                                }}>
-                                    {"Today 16:35"}
-                                </Text>
-                            </View>
+                                {"Today 16:35"}
+                            </Text>
+                        </View>
+                        <TouchableOpacity onPress={testG}>
                             <Icon style={{ marginRight: 10 }} name="check-circle" size={36} color="green" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={testG}>
                             <Icon name="times-circle" size={36} color="red" />
+                        </TouchableOpacity>
+                    </View>
+                    <Card.Divider />
+                    <View style={{
+                        flexDirection: 'row'
+                    }}>
+                        <View>
+                            <Text style={{
+                                fontSize: 24,
+                            }}>
+                                {el.message}
+                            </Text>
                         </View>
-                        <Card.Divider />
-                        <View style={{
-                            flexDirection: 'row'
-                        }}>
-                            <View>
-                                <Text style={{
-                                    fontSize: 24,
-                                }}>
-                                    {el.message}
-                                </Text>
-                            </View>
-                        </View>
-                    </Card>
-                ))
-            }
-        </ScrollView>
-        <View style={{
-            alignItems: 'center',
-            marginBottom: 15
-        }}>
+                    </View>
+                </Card>
+            ))
+        }
+    </ScrollView>
+); 
+
+const CreatedNotifications = () => (
+    <View style={{
+        alignItems: 'center',
+        marginBottom: 15
+    }}>
+        <TouchableOpacity onPress={testG}>
             <Icon name="plus" size={49} color="#2396d9" />
-        </View> 
+        </TouchableOpacity>
     </View>
 );
+
+const NotificationScreen = () => {
+    const [selectedIndex, handleIndexChange] = React.useState(0);
+
+    return (
+        <View style={{
+            flex: 1
+        }}>
+            <SegmentedControlTab tabStyle={{
+                marginTop: 20,
+            }}
+                selectedIndex={selectedIndex}
+                onTabPress={handleIndexChange}
+                values={["Upcoming", "Created"]} />
+            {
+               selectedIndex === 0 ? <UpcomingNotifications /> : <CreatedNotifications />
+            }
+        </View>
+    );
+}
 
 export default NotificationScreen;
