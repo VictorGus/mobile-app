@@ -193,10 +193,12 @@ const CreatedNotifications = () => {
                     ))
                 }
             </ScrollView>
-                <Modal animationType='slide' transparent={true} visible={modalVisible}>
+            <Modal animationType='slide' transparent={true} visible={modalVisible}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text>
+                        <Text style={{
+                            fontSize: 16
+                        }}>
                             {"Action"}
                         </Text>
                         <Input
@@ -205,7 +207,9 @@ const CreatedNotifications = () => {
                             maxLength={20}
                             onBlur={Keyboard.dismiss}
                         />
-                        <Text>
+                        <Text style={{
+                            fontSize: 16
+                        }}>
                             {"Category"}
                         </Text>
                         <Picker style={styles.textInput} label={"Category"}>
@@ -213,20 +217,48 @@ const CreatedNotifications = () => {
                             <Picker.Item label="Pills" value="pills" />
                             <Picker.Item label="Water consumption" value="water" />
                             <Picker.Item label="Walks" value="walking" />
-                            <Picker.Item label="Acitivities" value="activities" />
+                            <Picker.Item label="Activities" value="activities" />
                             <Picker.Item label="Medical services" value="medical-services" />
                         </Picker>
+                        <Text style={{
+                            fontSize: 16
+                        }}>
+                            {"Date and time"}
+                        </Text>
                         <Button title="Show Date Picker" onPress={showDatePicker} />
                         <DateTimePicker
                             isVisible={isDatePickerVisible}
                             testID="dateTimePicker"
                             value={Date.now()}
-                            onConfirm={()=>{}}
+                            onConfirm={() => { setDatePickerVisibility(false) }}
                             mode={"datetime"}
                             is24Hour={true}
                             display="default"
-                            // onChange={onChange}
+                        // onChange={onChange}
                         />
+                        <Button title="Save"
+                            buttonStyle={{
+                                marginTop: 10
+                            }}
+                            onPress={() => {
+                                setDatePickerVisibility(false);
+                                setModalVisible(false);
+                            }} />
+                        <Button title="Cancel"
+                            onPress={() => {
+                                setDatePickerVisibility(false);
+                                setModalVisible(false);
+                            }}
+                            titleStyle={{
+                                color: "#919190",
+                            }}
+                            buttonStyle={{
+                                marginTop: 10,
+                                borderStyle: 'solid',
+                                borderColor: '#babab8',
+                                borderWidth: 2,
+                                backgroundColor: 'white'
+                            }} />
                     </View>
                 </View>
             </Modal>
@@ -275,7 +307,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
-        alignItems: "center",
+        // alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
