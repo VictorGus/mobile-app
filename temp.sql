@@ -1,43 +1,61 @@
----- db:  -h localhost -p 5443 -U postgres mobile-db
-----
+---- db:  -h localhost -p 5443 -U postgres mobiledb
+
+---- Entities
 create table if not exists public_user (id text primary key not null,
-                                        ts timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-                                        settings_id text,
-                                        CONSTRAINT fk_settings
-                                        FOREIGN KEY(settings_id)
-                                        REFERENCES settings(id)
-                                        ON DELETE SET NULL,
-                                        resource jsonb);
+                                        device_id text);
 ----
 create table if not exists settings (id text primary key not null,
                                      ts timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                                      resource jsonb);
 ----
 create table if not exists condition (id text primary key not null,
-                                      ts TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                       user_id text,
+                                      date_time timestamp,
                                       CONSTRAINT fk_user
                                       FOREIGN KEY(user_id)
                                       REFERENCES public_user(id)
                                       ON DELETE SET NULL,
-                                      resource jsonb);
+                                      wellbeing text);
 ----
 create table if not exists notification (id text primary key not null,
-ts TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-user_id text,
-CONSTRAINT fk_user
-FOREIGN KEY(user_id)
-REFERENCES public_user(id)
-ON DELETE SET NULL,
-resource jsonb);
+                                         user_id text,
+                                         n_action text,
+                                         notification_rate bigint,
+                                         date_time timestamp,
+                                         CONSTRAINT fk_user
+                                         FOREIGN KEY(user_id)
+                                         REFERENCES public_user(id)
+                                         ON DELETE SET NULL);
 ----
-insert into public_user (id, settings_id) values ('user-1', 'set-1')
+create table if not exists notification_result (id text primary key not null,
+                                                notification_id text,
+                                                date_time timestamp,
+                                                n_result text,
+                                                CONSTRAINT fk_notification
+                                                FOREIGN KEY(notification_id)
+                                                REFERENCES notification(id)
+                                                ON DELETE SET NULL);
 ----
-insert into settings (id) values ('set-1')
+create table if not exists settings (id text primary key not null,
+                                     user_id text,
+                                     enable_achievements boolean,
+                                     enable_notifications boolean,
+                                     enable_md_sync boolean,
+                                     sync_date_time timestamp,
+                                     sync_rate bigint,
+                                     CONSTRAINT fk_user
+                                     FOREIGN KEY(user_id)
+                                     REFERENCES public_user(id)
+                                     ON DELETE SET NULL);
 ----
-select * from public_user p left join settings s on p.settings_id = s.id
+
+---- Drop every table
+drop table condition;
+drop table notification_result;
+drop table notification;
+drop table settings;
+drop table achievement;
+drop table public_user;
 ----
-update public_user set resource = '{"name":{"family":"Test","given":"Test"},"email":"test@gmail.com","username":"test","age":"45","active":true,"password":"encrypted"}'::jsonb;
-----
-drop table condition
+select * from settings
 ----

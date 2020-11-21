@@ -3,7 +3,7 @@ SHELL = bash
 PGPORT     ?= 5443
 PGHOST     ?= localhost
 PGUSER     ?= postgres
-PGDATABASE ?= mobile-db
+PGDATABASE ?= mobiledb
 PGPASSWORD ?= postgres
 PGIMAGE    ?= postgres:latest
 
