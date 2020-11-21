@@ -2,7 +2,8 @@
   (:require [honeysql.core       :as hsql]
             [hikari-cp.core      :as hc]
             [clojure.java.jdbc   :as jdbc]
-            [cheshire.core :as json]
+            [cheshire.core       :as json]
+            [dsql.pg             :as dsql]
             [clj-postgresql.core :as pg]
             [app.manifest        :as m]))
 
@@ -20,25 +21,54 @@
                                  :dbname   "fortest"
                                  :hikari {:read-only true})))
 
-(defn query [query ctx]
-  (->> query hsql/format
-       (jdbc/query @ctx)))
+(defn query [query ctx & [format]]
+  (let [format (or format :hsql)]
+    (case format
+      :hsql
+      (->> query hsql/format
+           (jdbc/query @ctx))
 
-(defn query-first [query ctx]
-  (->> query hsql/format
-       (jdbc/query @ctx)
-       first))
+      :dsql
+      (->> query dsql/format
+           (jdbc/query @ctx))
+
+      (throw (Exception. (str "Unknown format " format " supported formats :hsql :dsql"))))))
+
+(defn query-first [query ctx & [format]]
+  (let [format (or format :hsql)]
+    (case format
+      :hsql
+      (->> query hsql/format
+           (jdbc/query @ctx)
+           first)
+
+      :dsql
+      (->> query dsql/format
+           (jdbc/query @ctx)
+           first)
+
+      (throw (Exception. (str "Unknown format " format " supported formats :hsql :dsql"))))))
 
 (defn execute [query ctx]
-  (->> query hsql/format
-       (jdbc/execute! @ctx)
-       first))
+  (let [format (or format :hsql)]
+    (case format
+      :hsql
+      (->> query hsql/format
+           (jdbc/execute! @ctx)
+           first)
+
+      :dsql
+      (->> query dsql/format
+           (jdbc/execute! @ctx)
+           first)
+
+      (throw (Exception. (str "Unknown format " format " supported formats :hsql :dsql"))))))
 
 (comment
 
-  (query {:select [:*]
-          :from [[:public_user :p]]
-          :left-join [[:settings :s] [:= :s.id :p.id]]} pool-config)
+  (query-first {:select [:*]
+                :from [[:public_user :p]]
+                :left-join [[:settings :s] [:= :s.id :p.id]]} pool-config)
 
   (query {:select [:resource]
           :from [:public_user]} pool-config)
