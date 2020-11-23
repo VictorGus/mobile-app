@@ -8,15 +8,36 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.json   :refer [wrap-json-response wrap-json-body]]
             [app.dbcore  :as db]
+            [app.crud    :as crud]
             [org.httpkit.server :as server]
             [clojure.string     :as str])
   (:gen-class))
 
 (defn routes [ctx]
-  {"test"   {:GET (fn [ctx]
-                    (fn [_]
-                      {:body "Test"
-                       :status "200"}))}})
+  {"notification"        {:GET  (crud/read-entity   ctx :notification)
+                          :POST (crud/create-entity ctx :notification)
+                          [:id] {:GET    (crud/read-entity   ctx :notification)
+                                 :DELETE (crud/delete-entity ctx :notification)
+                                 :PATCH  (crud/patch-entity  ctx :notification)
+                                 :PUT    (crud/update-entity ctx :notification)}}
+   "notification-result" {:GET  (crud/read-entity ctx   :notification_result)
+                          :POST (crud/create-entity ctx :notification_result)
+                          [:id] {:GET    (crud/read-entity   ctx :notification_result)
+                                 :DELETE (crud/delete-entity ctx :notification_result)
+                                 :PATCH  (crud/patch-entity  ctx :notification_result)
+                                 :PUT    (crud/update-entity ctx :notification_result)}}
+   "user"                {:GET  (crud/read-entity ctx   :public_user)
+                          :POST (crud/create-entity ctx :public_user)
+                          [:id] {:GET    (crud/read-entity   ctx :public_user)
+                                 :DELETE (crud/delete-entity ctx :public_user)
+                                 :PATCH  (crud/patch-entity  ctx :public_user)
+                                 :PUT    (crud/update-entity ctx :public_user)}}
+   "settings"            {:GET  (crud/read-entity ctx   :settings)
+                          :POST (crud/create-entity ctx :settings)
+                          [:id] {:GET    (crud/read-entity   ctx :settings)
+                                 :DELETE (crud/delete-entity ctx :settings)
+                                 :PATCH  (crud/patch-entity  ctx :settings)
+                                 :PUT    (crud/update-entity ctx :settings)}}})
 
 (defn params-to-keyword [params]
   (reduce-kv (fn [acc k v]

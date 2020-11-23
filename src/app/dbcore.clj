@@ -49,7 +49,7 @@
 
       (throw (Exception. (str "Unknown format " format " supported formats :hsql :dsql"))))))
 
-(defn execute [query ctx]
+(defn execute [query ctx & [format]]
   (let [format (or format :hsql)]
     (case format
       :hsql

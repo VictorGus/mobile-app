@@ -20,6 +20,7 @@ create table if not exists condition (id text primary key not null,
 create table if not exists notification (id text primary key not null,
                                          user_id text,
                                          n_action text,
+                                         category text,
                                          notification_rate bigint,
                                          date_time timestamp,
                                          CONSTRAINT fk_user
@@ -30,6 +31,7 @@ create table if not exists notification (id text primary key not null,
 create table if not exists notification_result (id text primary key not null,
                                                 notification_id text,
                                                 date_time timestamp,
+                                                category text,
                                                 n_result text,
                                                 CONSTRAINT fk_notification
                                                 FOREIGN KEY(notification_id)
@@ -57,5 +59,5 @@ drop table settings;
 drop table achievement;
 drop table public_user;
 ----
-select * from settings
+select * from public_user
 ----
