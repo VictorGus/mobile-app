@@ -12,6 +12,8 @@ import {
 
 import NotificationScreen from './Notification';
 
+import AnalyticsScreen from './Analytics';
+
 import {
   Header,
   LearnMoreLinks,
@@ -50,7 +52,7 @@ const App: () => React$Node = () => {
  
   const renderScene = SceneMap({
     notifications: NotificationScreen,
-    history: HistoryScreen,
+    history: AnalyticsScreen,
     settings: SettingsScreen 
   });
 
