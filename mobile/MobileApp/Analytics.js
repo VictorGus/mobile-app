@@ -35,52 +35,63 @@ const demoData = [
 ]
 
 const WellbeingChart = () => {
+    const [currentIndex, setIndex] = React.useState(0);
+
     return (
-        <LineChart
-            data={{
-                labels: ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
-                datasets: [
-                    {
-                        data: [
-                            6,
-                            7,
-                            6,
-                            6,
-                            2,
-                            4,
-                            7,
-                            8
-                        ]
+        <View>
+            <LineChart
+                data={{
+                    labels: ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
+                    datasets: [
+                        {
+                            data: [
+                                6,
+                                7,
+                                6,
+                                6,
+                                2,
+                                4,
+                                7,
+                                8
+                            ]
+                        }
+                    ]
+                }}
+                width={Dimensions.get("window").width} // from react-native
+                height={220}
+                fromZero={true}
+                yAxisInterval={1} // optional, defaults to 1
+                chartConfig={{
+                    backgroundColor: "#0a6bcc",
+                    backgroundGradientFrom: "#0a6bcc",
+                    backgroundGradientTo: "#3d9dfc",
+                    decimalPlaces: 2, // optional, defaults to 2dp
+                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    style: {
+                        borderRadius: 16
+                    },
+                    propsForDots: {
+                        r: "6",
+                        strokeWidth: "2",
+                        stroke: "white"
                     }
-                ]
-            }}
-            width={Dimensions.get("window").width} // from react-native
-            height={220}
-            fromZero={true}
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-                backgroundColor: "#0a6bcc",
-                backgroundGradientFrom: "#0a6bcc",
-                backgroundGradientTo: "#3d9dfc",
-                decimalPlaces: 2, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                style: {
+                }}
+                bezier
+                style={{
+                    marginVertical: 8,
+                    margin: 8,
                     borderRadius: 16
-                },
-                propsForDots: {
-                    r: "6",
-                    strokeWidth: "2",
-                    stroke: "white"
-                }
-            }}
-            bezier
-            style={{
-                marginVertical: 8,
-                margin: 8,
-                borderRadius: 16
-            }}
-        />
+                }}
+            />
+            <SegmentedControlTab tabStyle={{
+                marginTop: 20,
+            }
+            }
+                selectedIndex={currentIndex}
+                onTabPress={setIndex}
+                values={["Today", "Last week", "Last month", "Last year"]} />
+        </View>
     )
 }
 
