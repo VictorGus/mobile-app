@@ -22,9 +22,9 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBarIndicatorProps, TabBar, TabBarItem } from 'react-native-tab-view';
 
-const HistoryScreen = () => (
+const AchievementsScreen = () => (
   <View style={[styles.scene, { backgroundColor: 'white' }]}>
     <Text style={styles.screenBody}>
       "Текст"
@@ -42,17 +42,28 @@ const SettingsScreen = () => (
 
 const initialLayout = { width: Dimensions.get('window').width };
 
+const renderTabBar = props => (
+  <TabBar
+    {...props}
+    indicatorStyle={{ backgroundColor: 'white' }}
+    renderLabel={({route}) => (<Text style={{color: 'white', fontSize: 12, fontWeight: 'bold'}}>{ route.title }</Text>)}
+  >
+  </TabBar>
+) 
+
 const App: () => React$Node = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: 'notifications', title: 'Notifications' },
     { key: 'history', title: 'History' },
+    { key: 'achievements', title: 'Achievements' },
     { key: 'settings', title: 'Settings' }
   ]);
  
   const renderScene = SceneMap({
     notifications: NotificationScreen,
     history: AnalyticsScreen,
+    achievements: AchievementsScreen,
     settings: SettingsScreen 
   });
 
@@ -60,6 +71,7 @@ const App: () => React$Node = () => {
     <TabView
       navigationState={{ index, routes }}
       renderScene={renderScene}
+      renderTabBar={renderTabBar}
       onIndexChange={setIndex}
       initialLayout={initialLayout}
     />

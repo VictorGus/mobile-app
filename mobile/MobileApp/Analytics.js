@@ -1,6 +1,7 @@
 import React from 'react';
 import { LineChart, PieChart } from "react-native-chart-kit";
-
+import Icon from 'react-native-vector-icons/FontAwesome'; 
+import NotificationIcon, { notificationIcon } from './UtilComponents'
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,6 +14,25 @@ import {
 } from 'react-native';
 
 import SegmentedControlTab from 'react-native-segmented-control-tab'
+
+const demoData = [
+    {
+        notificationStatus: "rejected",
+        action: "Have a glass of water",
+        category: "water"
+    },
+    {
+        notificationStatus: "overdue",
+        action: "Take aspirin",
+        category: "pills" 
+    },
+    {
+        notificationStatus: "perfomed",
+        action: "Have a long walk in the park",
+        category: "walking"
+
+    }
+]
 
 const WellbeingChart = () => {
     return (
@@ -88,27 +108,102 @@ const data = [
     }
   ];
   
+function StatusIcon (props) {
+    let iconColor;
+
+    switch (props.status) {
+        case "rejected":
+            iconColor = '#ff4a40'
+            break
+        case "overdue":
+            iconColor = '#fffc3d'
+            break
+        case "perfomed":
+            iconColor = '#4ec726'
+            break
+    }
+
+    return <Icon name='circle' size={32} style={{right: 0, position: 'absolute', margin: 8 }} color={iconColor}/>
+}
 
 const StatisticsChart = () => {
+    const [currentIndex, setIndex] = React.useState(0);
+
     return (
-        <PieChart
-            data={data}
-            height={220}
-            width={400}
-            chartConfig={{
-                backgroundColor: "#0a6bcc",
-                backgroundGradientFrom: "#0a6bcc",
-                backgroundGradientTo: "#3d9dfc",
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                style: {
-                    borderRadius: 16
-                },
-            }}
-            accessor="amount"
-            backgroundColor="transparent"
-            paddingLeft="15"
-        /> 
+        <View>
+            <PieChart
+                data={data}
+                height={220}
+                width={400}
+                chartConfig={{
+                    backgroundColor: "#0a6bcc",
+                    backgroundGradientFrom: "#0a6bcc",
+                    backgroundGradientTo: "#3d9dfc",
+                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    style: {
+                        borderRadius: 16
+                    },
+                }}
+                accessor="amount"
+                backgroundColor="transparent"
+                paddingLeft="15"
+            />
+            <SegmentedControlTab tabStyle={{
+                marginTop: 20,
+            }
+            }
+                selectedIndex={currentIndex}
+                onTabPress={setIndex}
+                values={["Today", "Last week", "Last month", "Last year"]} />
+            <ScrollView>
+                <View style={{
+                    margin: 8
+                }}>
+                    <Text style={{
+                        fontWeight: 'bold'
+                    }}>
+                        {"28.11.2020"}
+                    </Text>
+                    {
+                        demoData.map((el, i) => (
+                            <View
+                                key={i}
+                                style={{
+                                    height: 50,
+                                    margin: 8,
+                                    borderWidth: 2,
+                                    borderColor: '#c7c7c7'
+                                }}>
+                                <View style={{flexDirection: 'row'}}>
+                                    <View style={{width: 50}}>
+                                        <NotificationIcon category={el.category} style={{ margin: 8 }} />
+                                    </View>
+                                    <View style={{
+                                        margin: 10,
+                                        flexDirection: 'row'
+                                    }}>
+                                        <Text style={{
+                                            fontWeight: 'bold',
+                                            fontSize: 18
+                                        }}>
+                                            {"14:00"}
+                                        </Text>
+                                        <Text style={{
+                                            marginLeft: 5,
+                                            fontSize: 16
+                                        }}>
+                                           {el.action} 
+                                        </Text>
+                                    </View>
+                                </View>
+                                <StatusIcon status={el.notificationStatus} />
+                            </View>
+                        ))
+                    }
+                </View>
+            </ScrollView>
+        </View>
     )
 }
 

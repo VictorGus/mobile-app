@@ -4,7 +4,6 @@ import { Picker } from '@react-native-picker/picker'
 import { Card, Button, Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import IconFA from 'react-native-vector-icons/FontAwesome5'; 
-import FileSystem from 'react-native-fs'
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
@@ -230,6 +229,7 @@ const CreatedNotifications = () => {
                             isVisible={isDatePickerVisible}
                             testID="dateTimePicker"
                             value={Date.now()}
+                            onCancel={() => { setDatePickerVisibility(false) }}
                             onConfirm={() => { setDatePickerVisibility(false) }}
                             mode={"datetime"}
                             is24Hour={true}
