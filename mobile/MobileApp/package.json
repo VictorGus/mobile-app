@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/datetimepicker": "^3.0.5",
     "@react-native-picker/picker": "^1.9.2",
+    "date-fns": "^2.16.1",
     "react": "16.13.1",
     "react-native": "0.63.3",
     "react-native-chart-kit": "^6.7.0",

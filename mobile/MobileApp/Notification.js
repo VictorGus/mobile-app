@@ -6,6 +6,28 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IconFA from 'react-native-vector-icons/FontAwesome5'; 
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 import DateTimePicker from 'react-native-modal-datetime-picker';
+// import { formatDateTime } from './Utils';
+
+function formatDateTime(date) {
+    if (date != '') {
+        let month = '' + (date.getMonth() + 1).toString()
+        let day = '' + date.getDate().toString()
+        let year = date.getFullYear().toString()
+        let hour = date.getHours().toString()
+        let minute = date.getMinutes().toString()
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        if (hour.length < 2)
+            hour = '0' + hour;
+        if (minute.length < 2)
+            minute = '0' + minute;
+
+        return [hour, minute].join(':') + " " + [day, month, year].join('-');
+    }
+}
 
 const demoData = [
     {
@@ -123,9 +145,15 @@ const UpcomingNotifications = () => (
 const CreatedNotifications = () => {
     const [modalVisible, setModalVisible] = React.useState(false);
     const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+    const [dateTimeValue, setDateTime] = React.useState("");
     const showDatePicker = () => {
         setDatePickerVisibility(true);
       };
+
+    const handleConfirm = (date) => {
+        setDateTime(date);
+        setDatePickerVisibility(false);
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -196,6 +224,7 @@ const CreatedNotifications = () => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={{
+                            fontWeight: 'bold',
                             fontSize: 16
                         }}>
                             {"Action"}
@@ -203,10 +232,11 @@ const CreatedNotifications = () => {
                         <Input
                             style={styles.textInput}
                             placeholder="Enter action"
-                            maxLength={20}
+                            maxLength={35}
                             onBlur={Keyboard.dismiss}
                         />
                         <Text style={{
+                            fontWeight: 'bold',
                             fontSize: 16
                         }}>
                             {"Category"}
@@ -220,17 +250,24 @@ const CreatedNotifications = () => {
                             <Picker.Item label="Medical services" value="medical-services" />
                         </Picker>
                         <Text style={{
+                            fontWeight: 'bold',
                             fontSize: 16
                         }}>
                             {"Date and time"}
                         </Text>
-                        <Button title="Show Date Picker" onPress={showDatePicker} />
+                        <TouchableOpacity onPress={ showDatePicker } >
+                            <View style={styles.dateInput}>
+                                <Text style = {{ fontSize: 18 }}>
+                                    { formatDateTime(dateTimeValue) }
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
                         <DateTimePicker
                             isVisible={isDatePickerVisible}
                             testID="dateTimePicker"
                             value={Date.now()}
                             onCancel={() => { setDatePickerVisibility(false) }}
-                            onConfirm={() => { setDatePickerVisibility(false) }}
+                            onConfirm={ handleConfirm }
                             mode={"datetime"}
                             is24Hour={true}
                             display="default"
@@ -317,11 +354,20 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
       },
+      
+      dateInput: {
+        borderColor: '#CCCCCC',
+        borderBottomWidth: 3,
+        width: "100%",
+        marginLeft: 6,
+        marginRight: 6,
+        height: 30
+      },
+
       textInput: {
         borderColor: '#CCCCCC',
         borderBottomWidth: 1,
         width: "100%",
-        height: 50,
         fontSize: 18,
       }
 })
