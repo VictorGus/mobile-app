@@ -1,7 +1,7 @@
 import React from 'react';
 import { LineChart, PieChart } from "react-native-chart-kit";
 import Icon from 'react-native-vector-icons/FontAwesome'; 
-import NotificationIcon, { notificationIcon } from './UtilComponents'
+import { NotificationIcon } from './UtilComponents'
 import {
   SafeAreaView,
   StyleSheet,

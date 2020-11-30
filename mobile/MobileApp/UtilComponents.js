@@ -1,6 +1,11 @@
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import IconFA from 'react-native-vector-icons/FontAwesome5'; 
 import React from 'react';
+import { Picker } from '@react-native-picker/picker'
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Keyboard } from 'react-native';
+import { formatDateTime } from './Utils';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+
 
 function NotificationIcon(props) {
     switch (props.category) {
@@ -42,4 +47,129 @@ function StatusIcon (props) {
     return <Icon name='circle' size={32} style={{right: 0, position: 'absolute', margin: 8 }} color={iconColor}/>
 }
 
-export default NotificationIcon;
+[{type: "select", label: "Category", onChange: ()=>{}, initialValue: "test", items: [{value: "k", display: "baz"}]}]
+
+function FormField(props) {
+    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+      };
+
+    let field = props.field;
+
+    switch (field.type) {
+        case "select":
+            return (
+                <View>
+                    <Text style={{
+                        fontWeight: 'bold',
+                        marginBottom: 15,
+                        fontSize: 16
+                    }}>
+                        {field.label}
+                    </Text>
+                    <Picker
+                        style={styles.textInput}
+                        onValueChange={field.onChange}
+                        selectedValue={field.initialValue}>
+                        {field.items.map((item, i) => {
+                            return (
+                                <Picker.Item label={item.display} value={item.value} />
+                            )
+                        })}
+                    </Picker>
+                </View>
+            )
+        case "datetime":
+            return (
+                <View>
+                    <Text style={{
+                        fontWeight: 'bold',
+                        fontSize: 16
+                    }}>
+                        {field.label}
+                    </Text>
+                    <TouchableOpacity onPress={showDatePicker} >
+                        <View style={styles.dateInput}>
+                            <Text style={{ fontSize: 18 }}>
+                                {
+                                    formatDateTime(field.initialValue)
+                                }
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <DateTimePicker
+                        isVisible={isDatePickerVisible}
+                        value={Date.now()}
+                        onCancel={() => { setDatePickerVisibility(false) }}
+                        onConfirm={(date) => {
+                            field.onChange(date);
+                            setDatePickerVisibility(false);
+                        }}
+                        mode={"datetime"}
+                        is24Hour={true}
+                        display="default"
+                    />
+                </View>
+            )
+        case "text":
+            return (
+                <View>
+                    <Text style={{
+                        fontWeight: 'bold',
+                        fontSize: 16
+                    }}>
+                        {field.label}
+                    </Text>
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder={field.initialValue}
+                        inputStyle={{
+                            paddingBottom: 0
+                        }}
+                        maxLength={35}
+                        onChangeText={field.onChange}
+                        onBlur={Keyboard.dismiss}
+                    />
+                </View>
+            )
+    }
+}
+
+function InputForm (props) {
+
+    let fields = props.fields;
+    return (
+        <View>
+            {
+                fields.map((field, index) => (
+                    <View>
+                        <FormField field={field}/>
+                    </View>
+                ))
+    }
+        </View >
+    )
+}
+
+const styles = StyleSheet.create({
+                        dateInput: {
+                        borderColor: '#CCCCCC',
+        borderBottomWidth: 3,
+        width: "100%",
+        marginLeft: 6,
+        marginRight: 6,
+        marginTop: 15,
+        height: 30
+      },
+
+      textInput: {
+        borderColor: '#CCCCCC',
+        borderBottomWidth: 3,
+        marginBottom: 10,
+        width: "100%",
+        fontSize: 18,
+      }
+})
+
+export {InputForm, NotificationIcon};

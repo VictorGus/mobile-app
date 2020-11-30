@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Modal, Keyboard} from 'react-native';
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Modal, TextInput} from 'react-native';
 import { Picker } from '@react-native-picker/picker'
 import { Card, Button, Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import IconFA from 'react-native-vector-icons/FontAwesome5'; 
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 import DateTimePicker from 'react-native-modal-datetime-picker';
-// import { formatDateTime } from './Utils';
+import { InputForm } from './UtilComponents';
+// import { formatDateTime } from './Utils'
 
 function formatDateTime(date) {
-    if (date != '') {
+    if (date != null) {
         let month = '' + (date.getMonth() + 1).toString()
         let day = '' + date.getDate().toString()
         let year = date.getFullYear().toString()
@@ -25,7 +26,7 @@ function formatDateTime(date) {
         if (minute.length < 2)
             minute = '0' + minute;
 
-        return [hour, minute].join(':') + " " + [day, month, year].join('-');
+        return [hour, minute].join(':') + " " + [day, month, year].join('.');
     }
 }
 
@@ -144,15 +145,15 @@ const UpcomingNotifications = () => (
 
 const CreatedNotifications = () => {
     const [modalVisible, setModalVisible] = React.useState(false);
-    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
-    const [dateTimeValue, setDateTime] = React.useState("");
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
-      };
+    const [dateTimeValue, setDateTime] = React.useState(null);
+    const [pickerValue, setPickerValue] = React.useState(null);
 
     const handleConfirm = (date) => {
         setDateTime(date);
-        setDatePickerVisibility(false);
+    }
+
+    const handlePickerConfirm = (itemValue, itemIndex) => {
+        setPickerValue(itemValue);
     }
 
     return (
@@ -195,14 +196,6 @@ const CreatedNotifications = () => {
                                 <TouchableOpacity onPress={testG}>
                                     <Icon style={{ marginRight: 0 }} name="pencil" size={36} color="#2396d9" />
                                 </TouchableOpacity>
-                                {/* <TouchableOpacity style={{
-                                position: 'absolute',
-                                right: -20,
-                                zIndex: 999,
-                                bottom: 35
-                            }} onPress={testG}>
-                                <Icon onPress={() => { alert('You tapped the button!'); }} name="close" size={24} color="red" />
-                            </TouchableOpacity> */}
                             </View>
                             <Card.Divider />
                             <View style={{
@@ -223,67 +216,65 @@ const CreatedNotifications = () => {
             <Modal animationType='slide' transparent={true} visible={modalVisible}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={{
-                            fontWeight: 'bold',
-                            fontSize: 16
-                        }}>
-                            {"Action"}
-                        </Text>
-                        <Input
-                            style={styles.textInput}
-                            placeholder="Enter action"
-                            maxLength={35}
-                            onBlur={Keyboard.dismiss}
-                        />
-                        <Text style={{
-                            fontWeight: 'bold',
-                            fontSize: 16
-                        }}>
-                            {"Category"}
-                        </Text>
-                        <Picker style={styles.textInput} label={"Category"}>
-                            <Picker.Item label="Nutrition order" value="nutrition-order" />
-                            <Picker.Item label="Pills" value="pills" />
-                            <Picker.Item label="Water consumption" value="water" />
-                            <Picker.Item label="Walks" value="walking" />
-                            <Picker.Item label="Activities" value="activities" />
-                            <Picker.Item label="Medical services" value="medical-services" />
-                        </Picker>
-                        <Text style={{
-                            fontWeight: 'bold',
-                            fontSize: 16
-                        }}>
-                            {"Date and time"}
-                        </Text>
-                        <TouchableOpacity onPress={ showDatePicker } >
-                            <View style={styles.dateInput}>
-                                <Text style = {{ fontSize: 18 }}>
-                                    { formatDateTime(dateTimeValue) }
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        <DateTimePicker
-                            isVisible={isDatePickerVisible}
-                            testID="dateTimePicker"
-                            value={Date.now()}
-                            onCancel={() => { setDatePickerVisibility(false) }}
-                            onConfirm={ handleConfirm }
-                            mode={"datetime"}
-                            is24Hour={true}
-                            display="default"
-                        // onChange={onChange}
-                        />
+                        <InputForm fields={
+                            [
+                                {
+                                    type: "text",
+                                    label: "Action",
+                                    onChange: () => { },
+                                    initialValue: "Enter action"
+                                },
+                                {
+                                    type: "select",
+                                    label: "Category",
+                                    onChange: setPickerValue,
+                                    initialValue: pickerValue,
+                                    items: [
+                                        {
+                                            display: "Nutrition order",
+                                            value: "nutrition-order"
+                                        },
+                                        {
+                                            display: "Pills",
+                                            value: "pills"
+                                        },
+                                        {
+                                            display: "Water consumption",
+                                            value: "water"
+                                        },
+                                        {
+                                            display: "Walks",
+                                            value: "walking"
+                                        },
+                                        {
+                                            display: "Activities",
+                                            value: "activities"
+                                        },
+                                        {
+                                            display: "Medical services",
+                                            value: "medical-services"
+                                        }
+                                    ]
+                                },
+                                {
+                                    type: "datetime",
+                                    label: "Date and time",
+                                    onChange: handleConfirm,
+                                    initialValue: dateTimeValue 
+                                }
+                            ]
+                        } />
                         <Button title="Save"
                             buttonStyle={{
-                                marginTop: 10
+                                marginTop: 25
                             }}
                             onPress={() => {
-                                setDatePickerVisibility(false);
+                                // setDatePickerVisibility(false);
                                 setModalVisible(false);
                             }} />
                         <Button title="Cancel"
                             onPress={() => {
-                                setDatePickerVisibility(false);
+                                // setDatePickerVisibility(false);
                                 setModalVisible(false);
                             }}
                             titleStyle={{
@@ -361,12 +352,14 @@ const styles = StyleSheet.create({
         width: "100%",
         marginLeft: 6,
         marginRight: 6,
+        marginTop: 15,
         height: 30
       },
 
       textInput: {
         borderColor: '#CCCCCC',
-        borderBottomWidth: 1,
+        borderBottomWidth: 3,
+        marginBottom: 10,
         width: "100%",
         fontSize: 18,
       }
