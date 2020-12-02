@@ -71,7 +71,7 @@ function NotificationIcon(props) {
         case "water":
             return <IconFA name="glass-whiskey" size={29} color="#2396d9" />
 
-        case "medical-service":
+        case "medical-services":
             return <IconFA name="briefcase-medical" size={29} color="#2396d9" />
 
         case "walking":
@@ -79,6 +79,9 @@ function NotificationIcon(props) {
 
         case "activities":
             return <Icon name="soccer-ball-o" size={29} color="#2396d9" />
+
+        default:
+            return <Icon name="exclamation" size={29} color="#2396d9" />
     }
 }
 
@@ -87,64 +90,67 @@ function testG() {
     return 1;
 }
 
-const UpcomingNotifications = () => (
-    <View style={{
-        flex: 1
-    }}>
-        <ScrollView style={{
-            margin: 10,
-            marginTop: 5,
-            marginBottom: 15
+const UpcomingNotifications = () => {
+    return (
+        <View style={{
+            flex: 1
         }}>
-            {
-                demoData.map((el, i) => (
-                    <Card key={i}>
-                        <View style={{
-                            flexDirection: 'row',
-                            flexGrow: 2,
-                            marginBottom: 10,
-                            alignContent: 'space-between'
-                        }}>
-                            <Text>
-                                <NotificationIcon category={el.category} />
-                            </Text>
+            <ScrollView style={{
+                margin: 10,
+                marginTop: 5,
+                marginBottom: 15
+            }}>
+                {
+                    demoData.map((el, i) => (
+                        <Card key={i}>
                             <View style={{
-                                marginLeft: 5,
-                                marginTop: 5,
-                                flex: 1
+                                flexDirection: 'row',
+                                flexGrow: 2,
+                                marginBottom: 10,
+                                alignContent: 'space-between'
                             }}>
-                                <Text style={{
-                                    fontWeight: 'bold',
-                                    fontSize: 19
-                                }}>
-                                    {"Today 16:35"}
+                                <Text>
+                                    <NotificationIcon category={el.category} />
                                 </Text>
-                            </View>
-                            <TouchableOpacity onPress={testG}>
-                                <Icon style={{ marginRight: 10 }} name="check-circle" size={36} color="green" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={testG}>
-                                <Icon name="times-circle" size={36} color="red" />
-                            </TouchableOpacity>
-                        </View>
-                        <Card.Divider />
-                        <View style={{
-                            flexDirection: 'row'
-                        }}>
-                            <View>
-                                <Text style={{
-                                    fontSize: 24,
+                                <View style={{
+                                    marginLeft: 5,
+                                    marginTop: 5,
+                                    flex: 1
                                 }}>
-                                    {el.message}
-                                </Text>
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        fontSize: 19
+                                    }}>
+                                        {"Today 16:35"}
+                                    </Text>
+                                </View>
+                                <TouchableOpacity onPress={testG}>
+                                    <Icon style={{ marginRight: 10 }} name="check-circle" size={36} color="green" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={testG}>
+                                    <Icon name="times-circle" size={36} color="red" />
+                                </TouchableOpacity>
                             </View>
-                        </View>
-                    </Card>
-                ))
-            }
-        </ScrollView>
-    </View>
-);
+                            <Card.Divider />
+                            <View style={{
+                                flexDirection: 'row'
+                            }}>
+                                <View>
+                                    <Text style={{
+                                        fontSize: 24,
+                                    }}>
+                                        {el.message}
+                                    </Text>
+                                </View>
+                            </View>
+                        </Card>
+                    ))
+                }
+            </ScrollView>
+        </View>
+    )
+};
+
 
 const CreatedNotifications = () => {
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -153,6 +159,18 @@ const CreatedNotifications = () => {
     const [textInputValue, setTextInputValue] = React.useState(null);
     const [responseValue, setResponseValue] = React.useState(null);
     const [notificationRate, setNotificationRate] = React.useState(null);
+    const [editFormVisible, setEditFormVisible] = React.useState(false);
+    const [props, setEditFormData] = React.useState(false);
+    const [notifications, setNotifications] = React.useState(null);
+
+    console.log(props);
+
+    React.useEffect(()=> {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification'
+        }).then((data) => { return setNotifications(data) })
+    }, [])
 
     const handleConfirm = (date) => {
         setDateTime(date);
@@ -162,6 +180,8 @@ const CreatedNotifications = () => {
         setPickerValue(itemValue);
     }
 
+    let entry = notifications != null ? notifications.entry : []
+
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{
@@ -170,7 +190,7 @@ const CreatedNotifications = () => {
                 marginBottom: 15
             }}>
                 {
-                    demoData.map((el, i) => (
+                    entry.map((el, i) => (
                         <Card key={i}>
                             <View style={{
                                 position: 'relative',
@@ -192,14 +212,26 @@ const CreatedNotifications = () => {
                                         fontWeight: 'bold',
                                         fontSize: 19
                                     }}>
-                                        {"Today 16:35"}
+                                        {formatDateTime(new Date(el.date_time))}
                                     </Text>
-                                    <Icon style={{
-                                        marginRight: 10,
-                                        marginLeft: 2
-                                    }} name="repeat" size={14} color="#2396d9" />
+                                    {
+                                        el.notification_rate != null ? <Icon style={{
+                                            marginRight: 10,
+                                            marginLeft: 2
+                                        }} name="repeat" size={14} color="#2396d9" /> : null
+                                    }
                                 </View>
-                                <TouchableOpacity onPress={testG}>
+                                <TouchableOpacity onPress={() => {
+                                    setEditFormVisible(true)
+
+                                    setEditFormData({
+                                        id: el.id,
+                                        dateTimeValue: new Date(el.date_time),
+                                        pickerValue: el.category,
+                                        notificationRate: el.notification_rate,
+                                        textInputValue: el.n_action,
+                                    })
+                                }}>
                                     <Icon style={{ marginRight: 0 }} name="pencil" size={36} color="#2396d9" />
                                 </TouchableOpacity>
                             </View>
@@ -211,7 +243,7 @@ const CreatedNotifications = () => {
                                     <Text style={{
                                         fontSize: 24,
                                     }}>
-                                        {el.message}
+                                        {el.n_action}
                                     </Text>
                                 </View>
                             </View>
@@ -219,6 +251,119 @@ const CreatedNotifications = () => {
                     ))
                 }
             </ScrollView>
+
+            <Modal animationType='slide' transparent={true} visible={editFormVisible}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        {
+                            props.notificationRate != null ? <Icon style={{
+                                marginRight: 10,
+                                marginLeft: 2,
+                                position: 'absolute',
+                                right: 0,
+                                top: 6
+                            }} name="repeat" size={14} color="#2396d9" /> : null
+                        }
+                        <InputForm fields={
+                            [
+                                {
+                                    type: "text",
+                                    label: "Action",
+                                    onChange: (event) => {
+
+                                        let _text = event.nativeEvent.text;
+                                        let rate = _text.match(rateRegex);
+                                        let replacement = rate != null ? rate[0] : '';
+                                        let text = _text.replace(replacement, '');
+
+                                        if (rate != null) {
+                                            setNotificationRate(convertRateToMills(rate[0]))
+                                        }
+                                        setTextInputValue(text);
+                                    },
+                                    placeholder: "Enter action",
+                                    initialValue: props.textInputValue
+                                },
+                                {
+                                    type: "select",
+                                    label: "Category",
+                                    onChange: setPickerValue,
+                                    initialValue: pickerValue != null ? pickerValue : props.pickerValue,
+                                    items: [
+                                        {
+                                            display: "Select category",
+                                            value: null
+                                        },
+                                        {
+                                            display: "Nutrition order",
+                                            value: "nutrition-order"
+                                        },
+                                        {
+                                            display: "Pills",
+                                            value: "pills"
+                                        },
+                                        {
+                                            display: "Water consumption",
+                                            value: "water"
+                                        },
+                                        {
+                                            display: "Walks",
+                                            value: "walking"
+                                        },
+                                        {
+                                            display: "Activities",
+                                            value: "activities"
+                                        },
+                                        {
+                                            display: "Medical services",
+                                            value: "medical-services"
+                                        }
+                                    ]
+                                },
+                                {
+                                    type: "datetime",
+                                    label: "Date and time",
+                                    onChange: handleConfirm,
+                                    initialValue: dateTimeValue != null ? dateTimeValue : props.dateTimeValue
+                                }
+                            ]
+                        } />
+                        <Button title="Save"
+                            buttonStyle={{
+                                marginTop: 25
+                            }}
+                            onPress={() => {
+                                jsonFetch({
+                                    method: 'PUT',
+                                    uri: '/notification/' + props.id,
+                                    body: JSON.stringify({
+                                        user_id: "123",
+                                        n_action: textInputValue != null ? textInputValue : props.textInputValue,
+                                        category: pickerValue != null ? pickerValue : props.pickerValue,
+                                        notification_rate: props.notificationRate != null ? String(props.notificationRate) : null,
+                                        date_time: normalizeDateTime(dateTimeValue != null ? dateTimeValue : props.dateTimeValue)
+                                    })
+
+                                });
+                                setEditFormVisible(false);
+                            }} />
+                        <Button title="Cancel"
+                            onPress={() => {
+                                setEditFormVisible(false);
+                            }}
+                            titleStyle={{
+                                color: "#919190",
+                            }}
+                            buttonStyle={{
+                                marginTop: 10,
+                                borderStyle: 'solid',
+                                borderColor: '#babab8',
+                                borderWidth: 2,
+                                backgroundColor: 'white'
+                            }} />
+                    </View>
+                </View>
+            </Modal>
             <Modal animationType='slide' transparent={true} visible={modalVisible}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -258,6 +403,10 @@ const CreatedNotifications = () => {
                                     onChange: setPickerValue,
                                     initialValue: pickerValue,
                                     items: [
+                                        {
+                                            display: "Select category",
+                                            value: null 
+                                        },
                                         {
                                             display: "Nutrition order",
                                             value: "nutrition-order"
@@ -308,9 +457,9 @@ const CreatedNotifications = () => {
                                         date_time: normalizeDateTime(dateTimeValue)        
                                     })
 
-                                }).then((data)=> { return setResponseValue(data) });
-                                console.log(responseValue)
+                                });
                                 clearFormState([setNotificationRate, setTextInputValue, setDateTime, setPickerValue]);
+
                                 setModalVisible(false);
                             }} />
                         <Button title="Cancel"

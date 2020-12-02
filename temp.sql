@@ -61,3 +61,5 @@ drop table public_user;
 ----
 select * from notification
 ----
+truncate notification, notification_result;
+----

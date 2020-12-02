@@ -18,7 +18,7 @@ function NotificationIcon(props) {
         case "water":
             return <IconFA name="glass-whiskey" style={props.style} size={29} color="#2396d9" />
 
-        case "medical-service":
+        case "medical-services":
             return <IconFA name="briefcase-medical" style={props.style} size={29} color="#2396d9" />
 
         case "walking":
@@ -26,6 +26,9 @@ function NotificationIcon(props) {
 
         case "activities":
             return <Icon name="soccer-ball-o" style={props.style} size={29} color="#2396d9" />
+            
+        default:
+            return <Icon name="exclamation" size={29} color="#2396d9" />
     }
 }
 
@@ -71,6 +74,7 @@ function FormField(props) {
                     <Picker
                         style={styles.textInput}
                         onValueChange={field.onChange}
+                        mode={'dropdown'}
                         selectedValue={field.initialValue}>
                         {field.items.map((item, i) => {
                             return (
@@ -124,6 +128,7 @@ function FormField(props) {
                     <TextInput
                         style={styles.textInput}
                         placeholder={field.placeholder}
+                        defaultValue={field.initialValue}
                         inputStyle={{
                             paddingBottom: 0
                         }}
