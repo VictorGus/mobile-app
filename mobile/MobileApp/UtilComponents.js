@@ -74,7 +74,7 @@ function FormField(props) {
                         selectedValue={field.initialValue}>
                         {field.items.map((item, i) => {
                             return (
-                                <Picker.Item label={item.display} value={item.value} />
+                                <Picker.Item key={i} label={item.display} value={item.value} />
                             )
                         })}
                     </Picker>
@@ -123,12 +123,12 @@ function FormField(props) {
                     </Text>
                     <TextInput
                         style={styles.textInput}
-                        placeholder={field.initialValue}
+                        placeholder={field.placeholder}
                         inputStyle={{
                             paddingBottom: 0
                         }}
                         maxLength={35}
-                        onChangeText={field.onChange}
+                        onEndEditing={field.onChange}
                         onBlur={Keyboard.dismiss}
                     />
                 </View>
@@ -143,9 +143,9 @@ function InputForm (props) {
         <View>
             {
                 fields.map((field, index) => (
-                    <View>
-                        <FormField field={field}/>
-                    </View>
+                    <View key={index} >
+                        <FormField field={field} />
+                   </View>
                 ))
     }
         </View >
@@ -153,23 +153,23 @@ function InputForm (props) {
 }
 
 const styles = StyleSheet.create({
-                        dateInput: {
-                        borderColor: '#CCCCCC',
+    dateInput: {
+        borderColor: '#CCCCCC',
         borderBottomWidth: 3,
         width: "100%",
         marginLeft: 6,
         marginRight: 6,
         marginTop: 15,
         height: 30
-      },
+    },
 
-      textInput: {
+    textInput: {
         borderColor: '#CCCCCC',
         borderBottomWidth: 3,
         marginBottom: 10,
         width: "100%",
         fontSize: 18,
-      }
+    }
 })
 
 export {InputForm, NotificationIcon};

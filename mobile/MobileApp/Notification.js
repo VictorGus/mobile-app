@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IconFA from 'react-native-vector-icons/FontAwesome5'; 
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import { jsonFetch, convertRateToMills, clearFormState, normalizeDateTime } from './Utils'
 import { InputForm } from './UtilComponents';
 // import { formatDateTime } from './Utils'
 
@@ -29,6 +30,8 @@ function formatDateTime(date) {
         return [hour, minute].join(':') + " " + [day, month, year].join('.');
     }
 }
+
+const rateRegex = /(every ([0-9][0-9]|[0-9]) (months|days|weeks|years|minutes|hours))|(every year)|(every month)|(every day)|(every week)|(every hour)|(every minute)/;
 
 const demoData = [
     {
@@ -147,6 +150,9 @@ const CreatedNotifications = () => {
     const [modalVisible, setModalVisible] = React.useState(false);
     const [dateTimeValue, setDateTime] = React.useState(null);
     const [pickerValue, setPickerValue] = React.useState(null);
+    const [textInputValue, setTextInputValue] = React.useState(null);
+    const [responseValue, setResponseValue] = React.useState(null);
+    const [notificationRate, setNotificationRate] = React.useState(null);
 
     const handleConfirm = (date) => {
         setDateTime(date);
@@ -216,13 +222,35 @@ const CreatedNotifications = () => {
             <Modal animationType='slide' transparent={true} visible={modalVisible}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
+                        {
+                            notificationRate != null ? <Icon style={{
+                                marginRight: 10,
+                                marginLeft: 2,
+                                position: 'absolute',
+                                right: 0,
+                                top: 6
+                            }} name="repeat" size={14} color="#2396d9" /> : null
+                        }
                         <InputForm fields={
                             [
                                 {
                                     type: "text",
                                     label: "Action",
-                                    onChange: () => { },
-                                    initialValue: "Enter action"
+                                    onChange: (event) => {
+                                        setNotificationRate(null);
+
+                                        let _text = event.nativeEvent.text;
+                                        let rate = _text.match(rateRegex);
+                                        let replacement = rate != null ? rate[0] : '';
+                                        let text = _text.replace(replacement, '');
+
+                                        if (rate != null) {
+                                            setNotificationRate(convertRateToMills(rate[0]))
+                                        }
+                                        setTextInputValue(text);
+                                    },
+                                    placeholder: "Enter action",
+                                    initialValue: textInputValue
                                 },
                                 {
                                     type: "select",
@@ -269,12 +297,25 @@ const CreatedNotifications = () => {
                                 marginTop: 25
                             }}
                             onPress={() => {
-                                // setDatePickerVisibility(false);
+                                jsonFetch({
+                                    method: 'POST',
+                                    uri: '/notification',
+                                    body: JSON.stringify({
+                                        user_id: "123",          
+                                        n_action: textInputValue,         
+                                        category: pickerValue,        
+                                        notification_rate: notificationRate != null ? String(notificationRate) : null,
+                                        date_time: normalizeDateTime(dateTimeValue)        
+                                    })
+
+                                }).then((data)=> { return setResponseValue(data) });
+                                console.log(responseValue)
+                                clearFormState([setNotificationRate, setTextInputValue, setDateTime, setPickerValue]);
                                 setModalVisible(false);
                             }} />
                         <Button title="Cancel"
                             onPress={() => {
-                                // setDatePickerVisibility(false);
+                                clearFormState([setNotificationRate, setTextInputValue, setDateTime, setPickerValue]);
                                 setModalVisible(false);
                             }}
                             titleStyle={{
@@ -294,7 +335,9 @@ const CreatedNotifications = () => {
                 alignItems: 'center',
                 marginBottom: 10
             }}>
-                <TouchableOpacity onPress={() => { setModalVisible(!modalVisible) }}>
+                <TouchableOpacity onPress={() => {
+                    setModalVisible(!modalVisible)
+                    }}>
                     <Icon name="plus" size={49} color="#2396d9" />
                 </TouchableOpacity>
             </View>

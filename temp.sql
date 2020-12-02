@@ -59,5 +59,5 @@ drop table settings;
 drop table achievement;
 drop table public_user;
 ----
-select * from public_user
+select * from notification
 ----

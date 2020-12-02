@@ -19,4 +19,53 @@ function formatDateTime(date) {
     }
 }
 
-export { formatDateTime };
+function normalizeDateTime(date) {
+    if (date != null) {
+        let month = '' + (date.getMonth() + 1).toString()
+        let day = '' + date.getDate().toString()
+        let year = date.getFullYear().toString()
+        let hour = date.getHours().toString()
+        let minute = date.getMinutes().toString()
+
+        return [year, month, day].join('-') + " " + [hour, minute, '00'].join(':');
+    }
+}
+
+function clearFormState (setters) {
+    setters.map((fn) => fn(null));
+}
+
+async function jsonFetch (query) {
+    let uri = query.uri;
+    delete query["uri"]
+
+    return await fetch('http://192.168.0.104:9090' + uri, query)
+        .then((response) => response.json())
+        .then((json) => {
+            return json;
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+}
+
+function convertRateToMills (rateText) {
+    const timeInMills = {
+        day: 86400000,
+        week: 604800000,
+        month: 2592000000,
+        year: 31536000000,
+        hour: 3600000,
+        minute: 60000 
+    }
+
+    let rateParts = rateText.replace('every ', '').replace('s', '').split(' ');
+
+    if (rateParts.length > 1) {
+        return parseInt(rateParts[0]) * timeInMills[rateParts[1]];
+    } else {
+        return timeInMills[rateParts[0]];
+    }
+}
+
+export { formatDateTime, jsonFetch, convertRateToMills, clearFormState, normalizeDateTime };
