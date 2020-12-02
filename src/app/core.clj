@@ -80,7 +80,6 @@
     (if (= :options (:request-method req))
       (preflight req)
       (let [req (merge req {:body (handle-input-stream req)})
-            _ (println req)
             resp (dispatch req)]
         (-> resp (allow req))))))
 

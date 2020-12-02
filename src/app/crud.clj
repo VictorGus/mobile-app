@@ -128,10 +128,14 @@
                              (cond-> [:and]
 
                                (:date_from params)
-                               (conj [:>= :date_time (hsql/raw (str (:date_from params) "::date"))])
+                               (conj [:>= :date_time (java.sql.Timestamp/valueOf (-> (:date_from params)
+                                                                                     (clojure.string/replace "T" " ")
+                                                                                     (clojure.string/replace "Z" "")))])
 
                                (:date_to params)
-                               (conj [:<= :date_time (hsql/raw (str (:date_to params) "::date"))])
+                               (conj [:<= :date_time (java.sql.Timestamp/valueOf (-> (:date_to params)
+                                                                                         (clojure.string/replace "T" " ")
+                                                                                         (clojure.string/replace "Z" "")))])
 
                                (:user_id params)
                                (conj [:= :user_id (:user_id params)])
@@ -141,6 +145,7 @@
 
                                (:device_id params)
                                (conj [:= :device_id (:device_id params)]))))
+              _ (println query)
               data (if-let [id (:id params)]
                      (db/query-first {:select [:*]
                                       :from [entity]
@@ -153,3 +158,12 @@
              :body {:message (str "Resource with id " (:id params) " is not found")}}))
         {:status 404
          :body {:message (str "Unknown params " (clojure.string/join ", " invalid-params))}}))))
+
+(comment
+
+
+  (hsql/raw (java.sql.Timestamp/valueOf (-> "2020-12-03T15:58:00Z"
+                                            (clojure.string/replace "T" " ")
+                                            (clojure.string/replace "Z" ""))) )
+
+  )
