@@ -69,11 +69,19 @@
              "Access-Control-Allow-Credentials" "true"
              "Access-Control-Expose-Headers" "Location, Content-Location, Category, Content-Type, X-total-count"})))
 
+(defn handle-input-stream [{:keys [body]}]
+  (if (and body
+           (instance? org.httpkit.BytesInputStream body))
+    (json/parse-string (slurp body) true)
+    body))
+
 (defn mk-handler [dispatch]
   (fn [{headers :headers uri :uri :as req}]
     (if (= :options (:request-method req))
       (preflight req)
-      (let [resp (dispatch req)]
+      (let [req (merge req {:body (handle-input-stream req)})
+            _ (println req)
+            resp (dispatch req)]
         (-> resp (allow req))))))
 
 (defn app [ctx]

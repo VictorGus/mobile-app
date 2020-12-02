@@ -53,7 +53,9 @@
                         "date-time"
                         (java.sql.Timestamp/valueOf v)
                         "integer"
-                        (Integer/parseInt v)
+                        (cond-> v
+                            (instance? java.lang.String v)
+                            Integer/parseInt)
                         v)))))
    {}
    body))
@@ -74,10 +76,10 @@
 
 (defn create-entity [ctx entity]
   (fn [{:keys [body] :as request}]
-    (let [body  (as-> (clojure.walk/keywordize-keys body) body
-                  (cond-> body
-                    (not (:id body))
-                    (assoc :id (str (java.util.UUID/randomUUID)))))
+    (let [body (as-> (clojure.walk/keywordize-keys body) body
+                 (cond-> body
+                   (not (:id body))
+                   (assoc :id (str (java.util.UUID/randomUUID)))))
           values (normalize-fields body entity)]
       (db/execute {:insert-into entity
                    :values [values]} ctx)
@@ -118,24 +120,27 @@
     (let [invalid-params (filter #(not ((set (:search-params (entity entities-structure))) %))
                                  (keys params))]
       (if (empty? invalid-params)
-        (let [query {:select [:*]
-                     :from [entity]
-                     :where (cond-> [:and]
+        (let [query (cond-> {:select [:*]
+                             :from [entity]}
 
-                              (:date_from params)
-                              (conj [:>= :date_time (hsql/raw (str (:date_from params) "::date"))])
+                      (not-empty params)
+                      (assoc :where
+                             (cond-> [:and]
 
-                              (:date_to params)
-                              (conj [:<= :date_time (hsql/raw (str (:date_to params) "::date"))])
+                               (:date_from params)
+                               (conj [:>= :date_time (hsql/raw (str (:date_from params) "::date"))])
 
-                              (:user_id params)
-                              (conj [:= :user_id (:user_id params)])
+                               (:date_to params)
+                               (conj [:<= :date_time (hsql/raw (str (:date_to params) "::date"))])
 
-                              (:category params)
-                              (conj [:= :category (:category params)])
+                               (:user_id params)
+                               (conj [:= :user_id (:user_id params)])
 
-                              (:device_id params)
-                              (conj [:= :device_id (:device_id params)]))}
+                               (:category params)
+                               (conj [:= :category (:category params)])
+
+                               (:device_id params)
+                               (conj [:= :device_id (:device_id params)]))))
               data (if-let [id (:id params)]
                      (db/query-first {:select [:*]
                                       :from [entity]
