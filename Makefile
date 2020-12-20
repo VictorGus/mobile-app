@@ -7,6 +7,9 @@ PGDATABASE ?= mobiledb
 PGPASSWORD ?= postgres
 PGIMAGE    ?= postgres:latest
 
+APP_PORT   ?= 8000
+APP_IMAGE  ?= thezorkij/mobile-test:latest
+
 .EXPORT_ALL_VARIABLES:
 .PHONY: test build
 
@@ -39,11 +42,14 @@ down:
 	docker-compose down
 
 docker-build:
-	docker build -f Dockerfile -t victor13533/web-test .
+	docker build -f Dockerfile -t thezorkij/mobile-test .
+
+unlock-pgdata:
+	sudo chmod a+rwx pgdata && sudo chown -R root:${USER} pgdata
 
 pub:
-	docker push victor13533/web-test:latest
+	docker push thezorkij/mobile-test:latest
 
-deployment:
-	kubectl apply -f ./deploy/backend.yaml && kubectl apply -f ./deploy/front-end.yaml && kubectl apply -f ./deploy/pg-cm.yaml
+# deployment:
+# 	kubectl apply -f ./deploy/backend.yaml && kubectl apply -f ./deploy/front-end.yaml && kubectl apply -f ./deploy/pg-cm.yaml
 

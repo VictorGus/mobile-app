@@ -1,5 +1,6 @@
-pgdata*
+pgdata
 jars
 .git
 .cpcache
 target
+mobile

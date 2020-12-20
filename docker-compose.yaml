@@ -12,3 +12,16 @@ services:
      POSTGRES_USER:     "${PGUSER}"
      POSTGRES_PASSWORD: "${PGPASSWORD}"
      POSTGRES_DB:       "${PGDATABASE}"
+
+  mobile-app:
+    image: "${APP_IMAGE}"
+    depends_on:
+      - db
+    links:
+      - "db:database"
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    environment:
+     PGHOST: database
+
+
