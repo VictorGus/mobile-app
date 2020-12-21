@@ -23,5 +23,3 @@ services:
       - "${APP_PORT}:${APP_PORT}"
     environment:
      PGHOST: database
-
-

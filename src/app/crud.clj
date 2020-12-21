@@ -20,7 +20,7 @@
                                   :category             {:type "string"
                                                          :value-set ["water" "walking" "pills" "nutrition-order"
                                                                      "medical-service" "activities"]}
-                                  :date_time            {:type "string"}
+                                  :date_time            {:type "date-time"}
                                   :n_result             {:type "string"
                                                          :value-set ["rejected"
                                                                      "performed"
@@ -145,7 +145,6 @@
 
                                (:device_id params)
                                (conj [:= :device_id (:device_id params)]))))
-              _ (println query)
               data (if-let [id (:id params)]
                      (db/query-first {:select [:*]
                                       :from [entity]

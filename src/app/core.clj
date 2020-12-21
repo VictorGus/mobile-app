@@ -8,6 +8,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.json   :refer [wrap-json-response wrap-json-body]]
             [app.dbcore  :as db]
+            [app.action  :as action]
             [app.crud    :as crud]
             [org.httpkit.server :as server]
             [clojure.string     :as str])
@@ -19,7 +20,8 @@
                           [:id] {:GET    (crud/read-entity   ctx :notification)
                                  :DELETE (crud/delete-entity ctx :notification)
                                  :PATCH  (crud/patch-entity  ctx :notification)
-                                 :PUT    (crud/update-entity ctx :notification)}}
+                                 :PUT    (crud/update-entity ctx :notification)}
+                          "$upcoming" {:GET (action/get-upcoming-notifications ctx)}}
    "notification-result" {:GET  (crud/read-entity ctx   :notification_result)
                           :POST (crud/create-entity ctx :notification_result)
                           [:id] {:GET    (crud/read-entity   ctx :notification_result)
@@ -32,6 +34,12 @@
                                  :DELETE (crud/delete-entity ctx :public_user)
                                  :PATCH  (crud/patch-entity  ctx :public_user)
                                  :PUT    (crud/update-entity ctx :public_user)}}
+   "condition"          {:GET  (crud/read-entity ctx   :condition)
+                         :POST (crud/create-entity ctx :condition)
+                         [:id] {:GET    (crud/read-entity   ctx :condition)
+                                :DELETE (crud/delete-entity ctx :condition)
+                                :PATCH  (crud/patch-entity  ctx :condition)
+                                :PUT    (crud/update-entity ctx :condition)}}
    "settings"            {:GET  (crud/read-entity ctx   :settings)
                           :POST (crud/create-entity ctx :settings)
                           [:id] {:GET    (crud/read-entity   ctx :settings)
@@ -113,4 +121,5 @@
 
 (comment
   (restart-server)
+
   )

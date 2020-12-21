@@ -36,8 +36,13 @@ function clearFormState (setters) {
 }
 
 async function jsonFetch (query) {
-    let uri = query.uri;
-    delete query["uri"]
+
+    let params =  query.params != null ? Object.entries(query.params).reduce((acc, [k, v]) => { return acc + k + "=" + v + '&'}, '?') : null;
+
+    let uri = params != null ? query.uri + params : query.uri;
+
+    delete query["uri"];
+    delete query["params"];
 
     return await fetch('http://192.168.0.104:9090' + uri, query)
         .then((response) => response.json())

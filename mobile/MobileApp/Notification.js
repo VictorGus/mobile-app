@@ -91,6 +91,25 @@ function testG() {
 }
 
 const UpcomingNotifications = () => {
+
+    const [notifications, setNotifications] = React.useState([]);
+    let today = new Date();
+    let tomorrow = new Date(today);
+    today.setHours(0, 0, 0, 0);
+    tomorrow.setDate(today.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    React.useEffect(()=> {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification/$upcoming',
+            params: {
+                date_from: normalizeDateTime(today),
+                date_to: normalizeDateTime(tomorrow)
+            }
+        }).then((data) => { return setNotifications(data.entry) })
+    }, [])
+
     return (
         <View style={{
             flex: 1
@@ -101,7 +120,7 @@ const UpcomingNotifications = () => {
                 marginBottom: 15
             }}>
                 {
-                    demoData.map((el, i) => (
+                    notifications.map((el, i) => (
                         <Card key={i}>
                             <View style={{
                                 flexDirection: 'row',
@@ -121,13 +140,37 @@ const UpcomingNotifications = () => {
                                         fontWeight: 'bold',
                                         fontSize: 19
                                     }}>
-                                        {"Today 16:35"}
+                                        {formatDateTime (new Date(el.date_time))}
                                     </Text>
                                 </View>
-                                <TouchableOpacity onPress={testG}>
+                                <TouchableOpacity onPress={() => {
+                                    jsonFetch({
+                                        method: 'POST',
+                                        uri: '/notification-result',
+                                        body: JSON.stringify({
+                                            notification_id: el.id,
+                                            n_result: "perfomed",
+                                            category: el.category,
+                                            date_time: normalizeDateTime(new Date(el.date_time)) 
+                                        })
+                                    })
+                                    setNotifications(notifications.filter(i => i.id != el.id));
+                                }}>
                                     <Icon style={{ marginRight: 10 }} name="check-circle" size={36} color="green" />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={testG}>
+                                <TouchableOpacity onPress={() => {
+                                    jsonFetch({
+                                        method: 'POST',
+                                        uri: '/notification-result',
+                                        body: JSON.stringify({
+                                            notification_id: el.id,
+                                            n_result: "rejected",
+                                            category: el.category,
+                                            date_time: normalizeDateTime(new Date(el.date_time)) 
+                                        })
+                                    })
+                                    setNotifications(notifications.filter(i => i.id != el.id));
+                                }}>
                                     <Icon name="times-circle" size={36} color="red" />
                                 </TouchableOpacity>
                             </View>
@@ -139,7 +182,7 @@ const UpcomingNotifications = () => {
                                     <Text style={{
                                         fontSize: 24,
                                     }}>
-                                        {el.message}
+                                        {el.n_action}
                                     </Text>
                                 </View>
                             </View>
@@ -162,8 +205,6 @@ const CreatedNotifications = () => {
     const [editFormVisible, setEditFormVisible] = React.useState(false);
     const [props, setEditFormData] = React.useState(false);
     const [notifications, setNotifications] = React.useState(null);
-
-    console.log(props);
 
     React.useEffect(()=> {
         jsonFetch({
@@ -328,6 +369,21 @@ const CreatedNotifications = () => {
                                 }
                             ]
                         } />
+                        <Button title="Delete"
+                            buttonStyle={{
+                                backgroundColor: 'red',
+                                marginTop: 25,
+                                marginBottom: 15
+                            }}
+                            onPress={() => {
+                                jsonFetch({
+                                    method: 'DELETE',
+                                    uri: '/notification/' + props.id
+                                })
+                                setEditFormVisible(false);
+                            }} />
+
+
                         <Button title="Save"
                             buttonStyle={{
                                 marginTop: 25
