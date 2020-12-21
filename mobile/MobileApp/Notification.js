@@ -152,6 +152,7 @@ const UpcomingNotifications = () => {
                                             notification_id: el.id,
                                             n_result: new Date().getTime() - new Date(el.date_time).getTime() <= 1800000 ? "perfomed" : "overdue",
                                             category: el.category,
+                                            n_action: el.n_action,
                                             date_time: normalizeDateTime(new Date(el.date_time)) 
                                         })
                                     })
@@ -167,6 +168,7 @@ const UpcomingNotifications = () => {
                                             notification_id: el.id,
                                             n_result: "rejected",
                                             category: el.category,
+                                            n_action: el.n_action,
                                             date_time: normalizeDateTime(new Date(el.date_time)) 
                                         })
                                     })

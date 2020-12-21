@@ -1,3 +1,5 @@
+import { Picker } from "@react-native-picker/picker"
+
 function formatDateTime(date) {
     if (date != null) {
         let month = '' + (date.getMonth() + 1).toString()
@@ -18,6 +20,37 @@ function formatDateTime(date) {
         return [hour, minute].join(':') + " " + [day, month, year].join('.');
     }
 }
+
+function extractDate(date) {
+    if (date != null) {
+        let month = '' + (date.getMonth() + 1).toString()
+        let day = '' + date.getDate().toString()
+        let year = date.getFullYear().toString()
+        let hour = date.getHours().toString()
+        let minute = date.getMinutes().toString()
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('.');
+    }
+}
+
+function exractTime(date) {
+    if (date != null) {
+        let hour = date.getHours().toString()
+        let minute = date.getMinutes().toString()
+
+        if (hour.length < 2)
+            hour = '0' + hour;
+        if (minute.length < 2)
+            minute = '0' + minute;
+
+        return [hour, minute].join(':');
+    }
+} 
 
 function normalizeDateTime(date) {
     if (date != null) {
@@ -73,4 +106,4 @@ function convertRateToMills (rateText) {
     }
 }
 
-export { formatDateTime, jsonFetch, convertRateToMills, clearFormState, normalizeDateTime };
+export { formatDateTime, jsonFetch, convertRateToMills, clearFormState, normalizeDateTime, extractDate, exractTime };

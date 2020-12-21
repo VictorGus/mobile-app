@@ -61,8 +61,6 @@ drop table public_user;
 ----
 select * from notification
 ----
-truncate notification, notification_result;
-----
 explain analyze
 select count(*) from notification n
 left join notification_result n_r on n.id = n_r.notification_id

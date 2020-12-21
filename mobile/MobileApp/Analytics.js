@@ -2,7 +2,7 @@ import React from 'react';
 import { LineChart, PieChart } from "react-native-chart-kit";
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import { NotificationIcon } from './UtilComponents'
-import { jsonFetch } from './Utils'
+import { jsonFetch, formatDateTime, extractDate, exractTime } from './Utils'
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 
 import SegmentedControlTab from 'react-native-segmented-control-tab'
+
+import lodash from 'lodash'
 
 const demoData = [
     {
@@ -145,7 +147,11 @@ const NotificationResultsGrid = () => {
         jsonFetch({
             method: 'GET',
             uri: '/notification-result'
-        }).then((data) => { return setNotificationResults(data.entry) })
+        }).then((data) => {
+            let entry = data.entry;
+
+            return setNotificationResults(lodash.groupBy(entry, (el) => extractDate(new Date(el.date_time))))
+        })
     }, [])
 
     return (
@@ -153,51 +159,56 @@ const NotificationResultsGrid = () => {
             flex: 1
         }}>
             <ScrollView>
-                {/* <View style={{
-                    margin: 8
-                }}>
-                    <Text style={{
-                        fontWeight: 'bold'
-                    }}>
-                        {"28.11.2020"}
-                    </Text> */}
                 {
-                    notificationResults.map((el, i) => (
-                        <View
-                            key={i}
-                            style={{
-                                height: 50,
-                                margin: 8,
-                                borderWidth: 2,
-                                borderColor: '#c7c7c7'
+                    Object.entries(notificationResults).map(([date, arr], i) => (
+                        <View style={{
+                            margin: 8
+                        }}>
+                            <Text style={{
+                                fontWeight: 'bold'
                             }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={{ width: 50 }}>
-                                    <NotificationIcon category={el.category} style={{ margin: 8 }} />
-                                </View>
-                                <View style={{
-                                    margin: 10,
-                                    flexDirection: 'row'
-                                }}>
-                                    <Text style={{
-                                        fontWeight: 'bold',
-                                        fontSize: 18
-                                    }}>
-                                        {"14:00"}
-                                    </Text>
-                                    <Text style={{
-                                        marginLeft: 5,
-                                        fontSize: 16
-                                    }}>
-                                        {el.n_action}
-                                    </Text>
-                                </View>
-                            </View>
-                            <StatusIcon status={el.n_result} />
+                                {date}
+                            </Text>
+                            {
+                                arr.map((el, i) => (
+                                    <View
+                                        key={i}
+                                        style={{
+                                            height: 50,
+                                            margin: 8,
+                                            borderWidth: 2,
+                                            borderColor: '#c7c7c7'
+                                        }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View style={{ width: 50 }}>
+                                                <NotificationIcon category={el.category} style={{ margin: 8 }} />
+                                            </View>
+                                            <View style={{
+                                                margin: 10,
+                                                flexDirection: 'row'
+                                            }}>
+                                                <Text style={{
+                                                    fontWeight: 'bold',
+                                                    fontSize: 18
+                                                }}>
+                                                    {exractTime(new Date(el.date_time))}
+                                                </Text>
+                                                <Text style={{
+                                                    marginLeft: 5,
+                                                    fontSize: 16
+                                                }}>
+                                                    {el.n_action}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <StatusIcon status={el.n_result} />
+                                    </View>
+                                ))
+                            }
                         </View>
-                    ))
+                    )
+                    )
                 }
-                {/* </View> */}
             </ScrollView>
         </View>
     )
