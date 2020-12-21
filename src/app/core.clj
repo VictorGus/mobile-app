@@ -27,7 +27,8 @@
                           [:id] {:GET    (crud/read-entity   ctx :notification_result)
                                  :DELETE (crud/delete-entity ctx :notification_result)
                                  :PATCH  (crud/patch-entity  ctx :notification_result)
-                                 :PUT    (crud/update-entity ctx :notification_result)}}
+                                 :PUT    (crud/update-entity ctx :notification_result)}
+                          "$ratio" {:GET (action/get-notification-results-ratio ctx)}}
    "user"                {:GET  (crud/read-entity ctx   :public_user)
                           :POST (crud/create-entity ctx :public_user)
                           [:id] {:GET    (crud/read-entity   ctx :public_user)

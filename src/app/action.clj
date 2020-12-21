@@ -19,3 +19,11 @@
                         ctx)]
       {:status 200
        :body {:entry res}})))
+
+(defn get-notification-results-ratio [ctx]
+  (fn [{:keys [params] :as request}]
+    (let [res (db/query {:select [(hsql/raw "count(*), n_result")]
+                         :from [:notification_result]
+                         :group-by [:n-result]} ctx)]
+      {:status 200
+       :body {:entry res}})))

@@ -2,6 +2,7 @@ import React from 'react';
 import { LineChart, PieChart } from "react-native-chart-kit";
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import { NotificationIcon } from './UtilComponents'
+import { jsonFetch } from './Utils'
 import {
   SafeAreaView,
   StyleSheet,
@@ -137,13 +138,103 @@ function StatusIcon (props) {
     return <Icon name='circle' size={32} style={{right: 0, position: 'absolute', margin: 8 }} color={iconColor}/>
 }
 
-const StatisticsChart = () => {
-    const [currentIndex, setIndex] = React.useState(0);
+const NotificationResultsGrid = () => {
+    const [notificationResults, setNotificationResults] = React.useState([]);
+
+    React.useEffect(() => {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification-result'
+        }).then((data) => { return setNotificationResults(data.entry) })
+    }, [])
 
     return (
-        <View>
+        <View style={{
+            flex: 1
+        }}>
+            <ScrollView>
+                {/* <View style={{
+                    margin: 8
+                }}>
+                    <Text style={{
+                        fontWeight: 'bold'
+                    }}>
+                        {"28.11.2020"}
+                    </Text> */}
+                {
+                    notificationResults.map((el, i) => (
+                        <View
+                            key={i}
+                            style={{
+                                height: 50,
+                                margin: 8,
+                                borderWidth: 2,
+                                borderColor: '#c7c7c7'
+                            }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ width: 50 }}>
+                                    <NotificationIcon category={el.category} style={{ margin: 8 }} />
+                                </View>
+                                <View style={{
+                                    margin: 10,
+                                    flexDirection: 'row'
+                                }}>
+                                    <Text style={{
+                                        fontWeight: 'bold',
+                                        fontSize: 18
+                                    }}>
+                                        {"14:00"}
+                                    </Text>
+                                    <Text style={{
+                                        marginLeft: 5,
+                                        fontSize: 16
+                                    }}>
+                                        {el.n_action}
+                                    </Text>
+                                </View>
+                            </View>
+                            <StatusIcon status={el.n_result} />
+                        </View>
+                    ))
+                }
+                {/* </View> */}
+            </ScrollView>
+        </View>
+    )
+
+}
+
+const StatisticsChart = () => {
+    const [currentIndex, setIndex] = React.useState(0);
+    const [analyticsData, setAnalyticsData] = React.useState([]);
+
+    React.useEffect(()=> {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification-result/$ratio'
+        }).then((data) => { return setAnalyticsData(data.entry.map((el) =>  {
+            el["name"] = el.n_result;
+            el["amount"] = el.count;
+            el["legendFontColor"] = "black";
+            el["legendFontSize"] = 15;
+            switch(el.n_result) {
+                case "perfomed":
+                    el["color"] = "#4ec726"
+                    break
+                case "rejected":
+                    el["color"] = "#ff4a40"
+                    break
+                default:
+                    el["color"] = '#fffc3d'
+            }
+            return el;
+        })) })
+    }, [])
+
+    return (
+        <View style={{ flex: 1 }}>
             <PieChart
-                data={data}
+                data={analyticsData}
                 height={220}
                 width={400}
                 chartConfig={{
@@ -167,53 +258,7 @@ const StatisticsChart = () => {
                 selectedIndex={currentIndex}
                 onTabPress={setIndex}
                 values={["Today", "Last week", "Last month", "Last year"]} />
-            <ScrollView>
-                <View style={{
-                    margin: 8
-                }}>
-                    <Text style={{
-                        fontWeight: 'bold'
-                    }}>
-                        {"28.11.2020"}
-                    </Text>
-                    {
-                        demoData.map((el, i) => (
-                            <View
-                                key={i}
-                                style={{
-                                    height: 50,
-                                    margin: 8,
-                                    borderWidth: 2,
-                                    borderColor: '#c7c7c7'
-                                }}>
-                                <View style={{flexDirection: 'row'}}>
-                                    <View style={{width: 50}}>
-                                        <NotificationIcon category={el.category} style={{ margin: 8 }} />
-                                    </View>
-                                    <View style={{
-                                        margin: 10,
-                                        flexDirection: 'row'
-                                    }}>
-                                        <Text style={{
-                                            fontWeight: 'bold',
-                                            fontSize: 18
-                                        }}>
-                                            {"14:00"}
-                                        </Text>
-                                        <Text style={{
-                                            marginLeft: 5,
-                                            fontSize: 16
-                                        }}>
-                                           {el.action} 
-                                        </Text>
-                                    </View>
-                                </View>
-                                <StatusIcon status={el.notificationStatus} />
-                            </View>
-                        ))
-                    }
-                </View>
-            </ScrollView>
+            <NotificationResultsGrid />
         </View>
     )
 }
@@ -222,7 +267,9 @@ const AnalyticsScreen = () => {
     const [currentTab, switchTab] = React.useState(0);
 
     return (
-        <View>
+        <View style={{
+            flex: 1
+        }}>
             <SegmentedControlTab tabStyle={{
                 marginTop: 20
             }}

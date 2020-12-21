@@ -138,6 +138,7 @@ const UpcomingNotifications = () => {
                                 }}>
                                     <Text style={{
                                         fontWeight: 'bold',
+                                        color: new Date().getTime() - new Date(el.date_time).getTime() >= 1800000 ? "#e0e305" : "black",
                                         fontSize: 19
                                     }}>
                                         {formatDateTime (new Date(el.date_time))}
@@ -149,7 +150,7 @@ const UpcomingNotifications = () => {
                                         uri: '/notification-result',
                                         body: JSON.stringify({
                                             notification_id: el.id,
-                                            n_result: "perfomed",
+                                            n_result: new Date().getTime() - new Date(el.date_time).getTime() <= 1800000 ? "perfomed" : "overdue",
                                             category: el.category,
                                             date_time: normalizeDateTime(new Date(el.date_time)) 
                                         })
