@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# default PORT is 5443
+
 PGPASSWORD=postgres psql -h localhost -p ${PGPORT} -U postgres mobiledb -c "
 create table if not exists public_user (id text primary key not null, device_id text);
 
