@@ -12,8 +12,6 @@ create table if not exists notification (id text primary key not null, user_id t
 create table if not exists notification_result (id text primary key not null, notification_id text, category text, date_time timestamp, n_result text, CONSTRAINT fk_notification FOREIGN KEY(notification_id) REFERENCES notification(id) ON DELETE SET NULL);
 
 create table if not exists settings (id text primary key not null, user_id text, enable_achievements boolean, enable_notifications boolean, enable_md_sync boolean, sync_date_time timestamp, sync_rate bigint, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES public_user(id) ON DELETE SET NULL);
-
-SELECT 'CREATE DATABASE fortest TEMPLATE mobiledb' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'fortest')
 "
 
 echo "Done"
