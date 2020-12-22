@@ -156,6 +156,12 @@ const UpcomingNotifications = () => {
                                             date_time: normalizeDateTime(new Date(el.date_time)) 
                                         })
                                     })
+                                    if (el.notification_rate == null) {
+                                        jsonFetch({
+                                            method: 'DELETE',
+                                            uri: '/notification/' + el.id
+                                        })
+                                    }
                                     setNotifications(notifications.filter(i => i.id != el.id));
                                 }}>
                                     <Icon style={{ marginRight: 10 }} name="check-circle" size={36} color="green" />

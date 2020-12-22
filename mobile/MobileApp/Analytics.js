@@ -2,7 +2,7 @@ import React from 'react';
 import { LineChart, PieChart } from "react-native-chart-kit";
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import { NotificationIcon } from './UtilComponents'
-import { jsonFetch, formatDateTime, extractDate, exractTime } from './Utils'
+import { jsonFetch, formatDateTime, extractDate, exractTime, normalizeDateTime } from './Utils'
 import {
   SafeAreaView,
   StyleSheet,
@@ -140,19 +140,9 @@ function StatusIcon (props) {
     return <Icon name='circle' size={32} style={{right: 0, position: 'absolute', margin: 8 }} color={iconColor}/>
 }
 
-const NotificationResultsGrid = () => {
-    const [notificationResults, setNotificationResults] = React.useState([]);
+const GridItems = (props) => {
 
-    React.useEffect(() => {
-        jsonFetch({
-            method: 'GET',
-            uri: '/notification-result'
-        }).then((data) => {
-            let entry = data.entry;
-
-            return setNotificationResults(lodash.groupBy(entry, (el) => extractDate(new Date(el.date_time))))
-        })
-    }, [])
+    let notificationResults = props.data;
 
     return (
         <View style={{
@@ -161,9 +151,10 @@ const NotificationResultsGrid = () => {
             <ScrollView>
                 {
                     Object.entries(notificationResults).map(([date, arr], i) => (
-                        <View style={{
-                            margin: 8
-                        }}>
+                        <View key={i}
+                            style={{
+                                margin: 8
+                            }}>
                             <Text style={{
                                 fontWeight: 'bold'
                             }}>
@@ -212,16 +203,166 @@ const NotificationResultsGrid = () => {
             </ScrollView>
         </View>
     )
-
 }
 
-const StatisticsChart = () => {
-    const [currentIndex, setIndex] = React.useState(0);
+const TodayTab = (props) => {
+
+    const [notificationResults, setNotificationResults] = React.useState([]);
+
+    React.useEffect(() => {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification-result',
+            params: props.params
+        }).then((data) => {
+            let entry = data.entry;
+
+            return setNotificationResults(lodash.groupBy(entry, (el) => extractDate(new Date(el.date_time))))
+        })
+    }, [])
+
+    return (
+        <GridItems data={notificationResults} />
+    )
+}
+
+const WeekTab = (props) => {
+
+    const [notificationResults, setNotificationResults] = React.useState([]);
+
+    React.useEffect(() => {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification-result',
+            params: props.params
+        }).then((data) => {
+            let entry = data.entry;
+
+            return setNotificationResults(lodash.groupBy(entry, (el) => extractDate(new Date(el.date_time))))
+        })
+    }, [])
+
+    console.log(notificationResults)
+
+    return (
+        <GridItems data={notificationResults} />
+    )
+}
+
+const MonthTab = (props) => {
+
+    const [notificationResults, setNotificationResults] = React.useState([]);
+
+    React.useEffect(() => {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification-result',
+            params: props.params
+        }).then((data) => {
+            let entry = data.entry;
+
+            return setNotificationResults(lodash.groupBy(entry, (el) => extractDate(new Date(el.date_time))))
+        })
+    }, [])
+
+    return (
+        <GridItems data={notificationResults} />
+    )
+}
+
+const YearTab = (props) => {
+
+    const [notificationResults, setNotificationResults] = React.useState([]);
+
+    React.useEffect(() => {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification-result',
+            params: props.params
+        }).then((data) => {
+            let entry = data.entry;
+
+            return setNotificationResults(lodash.groupBy(entry, (el) => extractDate(new Date(el.date_time))))
+        })
+    }, [])
+
+    return (
+        <GridItems data={notificationResults} />
+    )
+}
+
+const NotificationResultsGrid = (props) => {
+    const [currentIndx, setIndex] = React.useState(0);
+
+    let params;
+
+    let today = new Date();
+    let destinationDate = new Date(today);
+
+    switch (props.activeTab) {
+        case 0:
+            destinationDate.setDate(today.getDate() + 1);
+            destinationDate.setHours(0, 0, 0, 0);
+            let day = today;
+            day.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_from: normalizeDateTime(day),
+                date_to: normalizeDateTime(destinationDate)
+            }
+            break;
+        case 1:
+            destinationDate.setDate(today.getDate() - 7);
+            destinationDate.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_to: normalizeDateTime(today),
+                date_from: normalizeDateTime(destinationDate)
+            }
+            break;
+        case 2:
+            destinationDate.setDate(today.getDate() - 30);
+            destinationDate.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_to: normalizeDateTime(today),
+                date_from: normalizeDateTime(destinationDate)
+            }
+            break;
+        case 3:
+            destinationDate.setDate(today.getDate() - 365);
+            destinationDate.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_to: normalizeDateTime(today),
+                date_from: normalizeDateTime(destinationDate)
+            }
+            break;
+    }
+
+    switch (props.activeTab) {
+        case 0:
+            return (< TodayTab params={params} />)
+
+        case 1:
+            return (< WeekTab params={params} />)
+
+        case 2:
+            return (< MonthTab params={params} />)
+
+        case 3:
+            return (< YearTab params={params} />)
+    }
+}
+
+const TodayTabChart = (props) => {
+
     const [analyticsData, setAnalyticsData] = React.useState([]);
 
     React.useEffect(()=> {
         jsonFetch({
             method: 'GET',
+            params: props.params,
             uri: '/notification-result/$ratio'
         }).then((data) => { return setAnalyticsData(data.entry.map((el) =>  {
             el["name"] = el.n_result;
@@ -243,33 +384,253 @@ const StatisticsChart = () => {
     }, [])
 
     return (
+        <PieChart
+            data={analyticsData}
+            height={220}
+            width={400}
+            chartConfig={{
+                backgroundColor: "#0a6bcc",
+                backgroundGradientFrom: "#0a6bcc",
+                backgroundGradientTo: "#3d9dfc",
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                    borderRadius: 16
+                },
+            }}
+            accessor="amount"
+            backgroundColor="transparent"
+            paddingLeft="15"
+        />
+    ) 
+}
+
+const WeekTabChart = (props) => {
+
+    const [analyticsData, setAnalyticsData] = React.useState([]);
+
+    React.useEffect(()=> {
+        jsonFetch({
+            method: 'GET',
+            params: props.params,
+            uri: '/notification-result/$ratio'
+        }).then((data) => { return setAnalyticsData(data.entry.map((el) =>  {
+            el["name"] = el.n_result;
+            el["amount"] = el.count;
+            el["legendFontColor"] = "black";
+            el["legendFontSize"] = 15;
+            switch(el.n_result) {
+                case "perfomed":
+                    el["color"] = "#4ec726"
+                    break
+                case "rejected":
+                    el["color"] = "#ff4a40"
+                    break
+                default:
+                    el["color"] = '#fffc3d'
+            }
+            return el;
+        })) })
+    }, [])
+
+    return (
+        <PieChart
+            data={analyticsData}
+            height={220}
+            width={400}
+            chartConfig={{
+                backgroundColor: "#0a6bcc",
+                backgroundGradientFrom: "#0a6bcc",
+                backgroundGradientTo: "#3d9dfc",
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                    borderRadius: 16
+                },
+            }}
+            accessor="amount"
+            backgroundColor="transparent"
+            paddingLeft="15"
+        />
+    ) 
+}
+
+const MonthTabChart = (props) => {
+
+    const [analyticsData, setAnalyticsData] = React.useState([]);
+
+    React.useEffect(()=> {
+        jsonFetch({
+            method: 'GET',
+            params: props.params,
+            uri: '/notification-result/$ratio'
+        }).then((data) => { return setAnalyticsData(data.entry.map((el) =>  {
+            el["name"] = el.n_result;
+            el["amount"] = el.count;
+            el["legendFontColor"] = "black";
+            el["legendFontSize"] = 15;
+            switch(el.n_result) {
+                case "perfomed":
+                    el["color"] = "#4ec726"
+                    break
+                case "rejected":
+                    el["color"] = "#ff4a40"
+                    break
+                default:
+                    el["color"] = '#fffc3d'
+            }
+            return el;
+        })) })
+    }, [])
+
+    return (
+        <PieChart
+            data={analyticsData}
+            height={220}
+            width={400}
+            chartConfig={{
+                backgroundColor: "#0a6bcc",
+                backgroundGradientFrom: "#0a6bcc",
+                backgroundGradientTo: "#3d9dfc",
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                    borderRadius: 16
+                },
+            }}
+            accessor="amount"
+            backgroundColor="transparent"
+            paddingLeft="15"
+        />
+    ) 
+}
+
+const YearTabChart = (props) => {
+
+    const [analyticsData, setAnalyticsData] = React.useState([]);
+
+    React.useEffect(()=> {
+        jsonFetch({
+            method: 'GET',
+            uri: '/notification-result/$ratio',
+            params: props.params
+        }).then((data) => { return setAnalyticsData(data.entry.map((el) =>  {
+            el["name"] = el.n_result;
+            el["amount"] = el.count;
+            el["legendFontColor"] = "black";
+            el["legendFontSize"] = 15;
+            switch(el.n_result) {
+                case "perfomed":
+                    el["color"] = "#4ec726"
+                    break
+                case "rejected":
+                    el["color"] = "#ff4a40"
+                    break
+                default:
+                    el["color"] = '#fffc3d'
+            }
+            return el;
+        })) })
+    }, [])
+
+    return (
+        <PieChart
+            data={analyticsData}
+            height={220}
+            width={400}
+            chartConfig={{
+                backgroundColor: "#0a6bcc",
+                backgroundGradientFrom: "#0a6bcc",
+                backgroundGradientTo: "#3d9dfc",
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                    borderRadius: 16
+                },
+            }}
+            accessor="amount"
+            backgroundColor="transparent"
+            paddingLeft="15"
+        />
+    ) 
+}
+
+const Chart = (props) => {
+    console.log(props.params);
+    switch(props.currentTab) {
+        case 0: 
+        return (<TodayTabChart params={props.params}/>)
+        case 1: 
+        return (<WeekTabChart params={props.params}/>)
+        case 2: 
+        return (<MonthTabChart params={props.params}/>)
+        case 3: 
+        return (<YearTabChart params={props.params}/>)
+    }
+}
+
+const StatisticsChart = () => {
+    const [currentIndex, setIndex] = React.useState(0);
+    const [analyticsData, setAnalyticsData] = React.useState([]);
+
+
+    let params;
+
+    let today = new Date();
+    let destinationDate = new Date(today);
+
+    switch (currentIndex) {
+        case 0:
+            destinationDate.setDate(today.getDate() + 1);
+            destinationDate.setHours(0, 0, 0, 0);
+            let day = today;
+            day.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_from: normalizeDateTime(day),
+                date_to: normalizeDateTime(destinationDate)
+            }
+            break;
+        case 1:
+            destinationDate.setDate(today.getDate() - 7);
+            destinationDate.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_to: normalizeDateTime(today),
+                date_from: normalizeDateTime(destinationDate)
+            }
+            break;
+        case 2:
+            destinationDate.setDate(today.getDate() - 30);
+            destinationDate.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_to: normalizeDateTime(today),
+                date_from: normalizeDateTime(destinationDate)
+            }
+            break;
+        case 3:
+            destinationDate.setDate(today.getDate() - 365);
+            destinationDate.setHours(0, 0, 0, 0);
+            params =
+            {
+                date_to: normalizeDateTime(today),
+                date_from: normalizeDateTime(destinationDate)
+            }
+            break;
+    }
+
+    return (
         <View style={{ flex: 1 }}>
-            <PieChart
-                data={analyticsData}
-                height={220}
-                width={400}
-                chartConfig={{
-                    backgroundColor: "#0a6bcc",
-                    backgroundGradientFrom: "#0a6bcc",
-                    backgroundGradientTo: "#3d9dfc",
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    style: {
-                        borderRadius: 16
-                    },
-                }}
-                accessor="amount"
-                backgroundColor="transparent"
-                paddingLeft="15"
-            />
+            <Chart currentTab={currentIndex} params={params} />
             <SegmentedControlTab tabStyle={{
                 marginTop: 20,
             }
             }
                 selectedIndex={currentIndex}
-                onTabPress={setIndex}
+                onTabPress={(index) => setIndex(index)}
                 values={["Today", "Last week", "Last month", "Last year"]} />
-            <NotificationResultsGrid />
+            <NotificationResultsGrid activeTab={currentIndex}/>
         </View>
     )
 }

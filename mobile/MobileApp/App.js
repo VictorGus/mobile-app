@@ -56,7 +56,7 @@ const App: () => React$Node = () => {
   const [routes] = React.useState([
     { key: 'notifications', title: 'Notifications' },
     { key: 'history', title: 'History' },
-    { key: 'achievements', title: 'Achievements' },
+    // { key: 'achievements', title: 'Achievements' },
     { key: 'settings', title: 'Settings' }
   ]);
  

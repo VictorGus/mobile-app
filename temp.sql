@@ -67,5 +67,5 @@ left join notification_result n_r on n.id = n_r.notification_id
 where n_r.id is not null
 ----
 select * from notification n
-where (select id from notification_result where notification_id = n.id) is null
+where (select ARRAY_AGG(id) from notification_result where notification_id = n.id) is null
 ----
