@@ -20,6 +20,6 @@ services:
     links:
       - "db:database"
     ports:
-      - "${APP_PORT}:${APP_PORT}"
+      - "9090:${APP_PORT}"
     environment:
      PGHOST: database
