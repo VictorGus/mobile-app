@@ -25,8 +25,11 @@ class BasicNotificationService {
     let date;
     if (notification.notification_rate) {
       date = new Date(new Date().getTime() + notification.notification_rate);
-    } else {
+    } else if (notification.date_time) {
       date = new Date(notification.date_time);
+    } else {
+      console.log('Cannot schedule notification: ' + notification);
+      return;
     }
     if (date < new Date()) {
       return;
