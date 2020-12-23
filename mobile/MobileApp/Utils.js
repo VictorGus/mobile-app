@@ -50,7 +50,7 @@ function exractTime(date) {
 
         return [hour, minute].join(':');
     }
-} 
+}
 
 function normalizeDateTime(date) {
     if (date != null) {
@@ -59,8 +59,9 @@ function normalizeDateTime(date) {
         let year = date.getFullYear().toString()
         let hour = date.getHours().toString()
         let minute = date.getMinutes().toString()
+        let seconds = date.getSeconds().toString()
 
-        return [year, month, day].join('-') + " " + [hour, minute, '00'].join(':');
+        return [year, month, day].join('-') + " " + [hour, minute, seconds].join(':');
     }
 }
 
@@ -83,7 +84,7 @@ async function jsonFetch (query) {
         connection.isConnected = state.isConnected;
         connection.type = state.type;
     })
-       
+
     return await fetch('http://192.168.0.104:9090' + uri, query)
         .then((response) => response.json())
         .then((json) => {
@@ -101,7 +102,7 @@ function convertRateToMills (rateText) {
         month: 2592000000,
         year: 31536000000,
         hour: 3600000,
-        minute: 60000 
+        minute: 60000
     }
 
     let rateParts = rateText.replace('every ', '').replace('s', '').split(' ');
