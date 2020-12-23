@@ -1,4 +1,4 @@
-import { Picker } from "@react-native-picker/picker"
+import NetInfo from "@react-native-community/netinfo";
 
 function formatDateTime(date) {
     if (date != null) {
@@ -77,6 +77,13 @@ async function jsonFetch (query) {
     delete query["uri"];
     delete query["params"];
 
+    let connection = {};
+
+    await NetInfo.fetch().then(state => {
+        connection.isConnected = state.isConnected;
+        connection.type = state.type;
+    })
+       
     return await fetch('http://192.168.0.104:9090' + uri, query)
         .then((response) => response.json())
         .then((json) => {
