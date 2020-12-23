@@ -2,12 +2,13 @@ import React from 'react';
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Modal, TextInput} from 'react-native';
 import { Picker } from '@react-native-picker/picker'
 import { Card, Button, Input} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome'; 
-import IconFA from 'react-native-vector-icons/FontAwesome5'; 
+import Icon from 'react-native-vector-icons/FontAwesome';
+import IconFA from 'react-native-vector-icons/FontAwesome5';
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { jsonFetch, convertRateToMills, clearFormState, normalizeDateTime } from './Utils'
 import { InputForm } from './UtilComponents';
+import BasicNotificationService from "./BasicNotificationService";
 // import { formatDateTime } from './Utils'
 
 function formatDateTime(date) {
@@ -153,7 +154,7 @@ const UpcomingNotifications = () => {
                                             n_result: new Date().getTime() - new Date(el.date_time).getTime() <= 1800000 ? "perfomed" : "overdue",
                                             category: el.category,
                                             n_action: el.n_action,
-                                            date_time: normalizeDateTime(new Date(el.date_time)) 
+                                            date_time: normalizeDateTime(new Date(el.date_time))
                                         })
                                     })
                                     if (el.notification_rate == null) {
@@ -162,6 +163,7 @@ const UpcomingNotifications = () => {
                                             uri: '/notification/' + el.id
                                         })
                                     }
+                                    BasicNotificationService.deleteBasicNotification(el.id);
                                     setNotifications(notifications.filter(i => i.id != el.id));
                                 }}>
                                     <Icon style={{ marginRight: 10 }} name="check-circle" size={36} color="green" />
@@ -175,7 +177,7 @@ const UpcomingNotifications = () => {
                                             n_result: "rejected",
                                             category: el.category,
                                             n_action: el.n_action,
-                                            date_time: normalizeDateTime(new Date(el.date_time)) 
+                                            date_time: normalizeDateTime(new Date(el.date_time))
                                         })
                                     })
                                     setNotifications(notifications.filter(i => i.id != el.id));
@@ -470,7 +472,7 @@ const CreatedNotifications = () => {
                                     items: [
                                         {
                                             display: "Select category",
-                                            value: null 
+                                            value: null
                                         },
                                         {
                                             display: "Nutrition order",
@@ -502,7 +504,7 @@ const CreatedNotifications = () => {
                                     type: "datetime",
                                     label: "Date and time",
                                     onChange: handleConfirm,
-                                    initialValue: dateTimeValue 
+                                    initialValue: dateTimeValue
                                 }
                             ]
                         } />
@@ -515,16 +517,17 @@ const CreatedNotifications = () => {
                                     method: 'POST',
                                     uri: '/notification',
                                     body: JSON.stringify({
-                                        user_id: "123",          
-                                        n_action: textInputValue,         
-                                        category: pickerValue,        
+                                        user_id: "123",
+                                        n_action: textInputValue,
+                                        category: pickerValue,
                                         notification_rate: notificationRate != null ? String(notificationRate) : null,
-                                        date_time: normalizeDateTime(dateTimeValue)        
+                                        date_time: normalizeDateTime(dateTimeValue)
                                     })
-
-                                });
+                                }).then((data) => {
+                                        BasicNotificationService.scheduleBasicNotification(data);
+                                    }
+                                );
                                 clearFormState([setNotificationRate, setTextInputValue, setDateTime, setPickerValue]);
-
                                 setModalVisible(false);
                             }} />
                         <Button title="Cancel"
@@ -602,7 +605,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
       },
-      
+
       dateInput: {
         borderColor: '#CCCCCC',
         borderBottomWidth: 3,

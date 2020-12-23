@@ -22,17 +22,17 @@ class BasicNotificationService {
 
   // On Create
   scheduleBasicNotification(notification) {
-    if (new Date(notification.date_time) < new Date()) {
-      return;
-    }
-    if (!this.notificationService.channelExists(notification.id)) {
-      this.notificationService.createChannel(notification.id);
-    }
     let date;
     if (notification.notification_rate == null) {
       date = new Date(notification.date_time);
     } else {
       date = new Date(new Date().getTime() + notification.notification_rate);
+    }
+    if (date < new Date()) {
+      return;
+    }
+    if (!this.notificationService.channelExists(notification.id)) {
+      this.notificationService.createChannel(notification.id);
     }
     this.notificationService.scheduleNotification(
       notification,
@@ -55,6 +55,10 @@ class BasicNotificationService {
       this.createNotificationResult(data, notification.action);
       data.date_time = normalizeDateTime(new Date());
       this.updateNotificationInfo(data);
+      if (data.notification_rate == null) {
+        this.deleteBasicNotification(data.id);
+        return;
+      }
       this.scheduleBasicNotification(data);
     });
   }
