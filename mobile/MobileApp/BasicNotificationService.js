@@ -4,7 +4,6 @@ import DEVICE_ID from "./Global";
 
 class BasicNotificationService {
   constructor(notificationService) {
-    console.log('Init basic notifications service');
     this.notificationService = notificationService;
     this.notificationActions = ['Yes', 'No'];
     jsonFetch({
