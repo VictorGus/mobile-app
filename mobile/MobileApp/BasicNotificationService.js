@@ -24,10 +24,10 @@ class BasicNotificationService {
   // On Create
   scheduleBasicNotification(notification) {
     let date;
-    if (notification.notification_rate == null) {
-      date = new Date(notification.date_time);
-    } else {
+    if (notification.notification_rate) {
       date = new Date(new Date().getTime() + notification.notification_rate);
+    } else {
+      date = new Date(notification.date_time);
     }
     if (date < new Date()) {
       return;
@@ -57,11 +57,11 @@ class BasicNotificationService {
       this.createNotificationResult(notif, notification.action);
       notif.date_time = normalizeDateTime(new Date());
       this.updateNotificationInfo(notif);
-      if (notif.notification_rate == null) {
-        this.deleteBasicNotification(notif.id);
+      if (notif.notification_rate) {
+        this.scheduleBasicNotification(notif);
         return;
       }
-      this.scheduleBasicNotification(notif);
+      this.deleteBasicNotification(notif.id);
     });
   }
 

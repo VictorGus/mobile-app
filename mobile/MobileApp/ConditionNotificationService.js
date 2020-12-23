@@ -26,11 +26,11 @@ class ConditionNotificationService {
       this.notificationService.createChannel(this.channelId);
     }
     let date;
-    if (settings.sync_rate == null) {
+    if (settings.sync_rate) {
+      date = new Date(new Date().getTime() + settings.sync_rate);
+    } else {
       date = new Date();
       date.setSeconds(date.getSeconds() + 10);
-    } else {
-      date = new Date(new Date().getTime() + settings.sync_rate);
     }
     var notification = {
       id: this.channelId,
