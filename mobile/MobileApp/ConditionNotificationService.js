@@ -1,6 +1,6 @@
 import {jsonFetch, normalizeDateTime} from './Utils';
 import NotificationService from './NotificationService';
-import DEVICE_ID from "./Global";
+import DEVICE_ID from './Global';
 
 class ConditionNotificationService {
   constructor(notificationService) {
@@ -46,7 +46,7 @@ class ConditionNotificationService {
 
   // On Disable
   disableConditionNotification() {
-    console.log("Disabling channel " + this.channelId);
+    console.log('Disabling channel ' + this.channelId);
     this.notificationService.removeChannel(this.channelId);
   }
 
@@ -57,12 +57,11 @@ class ConditionNotificationService {
   }
 
   handleConditionNotification(notification) {
-
     jsonFetch({
       method: 'GET',
-      uri: '/settings',
+      uri: '/settings/' + DEVICE_ID,
     }).then((data) => {
-      this.scheduleConditionNotification(data);
+      this.scheduleConditionNotification(data.entry);
     });
 
     jsonFetch({
@@ -88,6 +87,8 @@ class ConditionNotificationService {
   }
 }
 
-const CONDITION_NOTIFICATION_SERVICE = new ConditionNotificationService(NotificationService);
+const CONDITION_NOTIFICATION_SERVICE = new ConditionNotificationService(
+  NotificationService,
+);
 
 export default CONDITION_NOTIFICATION_SERVICE;
