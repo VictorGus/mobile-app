@@ -68,6 +68,18 @@
    {}
    body))
 
+(defn create-entity [ctx entity]
+  (fn [{:keys [body] :as request}]
+    (let [body (as-> (clojure.walk/keywordize-keys body) body
+                 (cond-> body
+                   (not (:id body))
+                   (assoc :id (str (java.util.UUID/randomUUID)))))
+          values (normalize-fields body entity)]
+      (db/execute {:insert-into entity
+                   :values [values]} ctx)
+      {:status 201
+       :body body})))
+
 (defn update-entity [ctx entity]
   (fn [{{:keys [id]} :params
        body          :body :as request}]
@@ -82,17 +94,6 @@
          :body body}
         ((create-entity ctx entity) (assoc-in request [:body :id] id))))))
 
-(defn create-entity [ctx entity]
-  (fn [{:keys [body] :as request}]
-    (let [body (as-> (clojure.walk/keywordize-keys body) body
-                 (cond-> body
-                   (not (:id body))
-                   (assoc :id (str (java.util.UUID/randomUUID)))))
-          values (normalize-fields body entity)]
-      (db/execute {:insert-into entity
-                   :values [values]} ctx)
-      {:status 201
-       :body body})))
 
 
 (defn patch-entity [ctx entity]
