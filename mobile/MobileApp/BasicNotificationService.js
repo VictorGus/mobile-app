@@ -1,5 +1,6 @@
 import {jsonFetch, normalizeDateTime} from './Utils';
 import NotificationService from  './NotificationService'
+import DEVICE_ID from "./Global";
 
 class BasicNotificationService {
   constructor(notificationService) {
@@ -68,7 +69,7 @@ class BasicNotificationService {
       method: 'PUT',
       uri: '/notification/' + notification.id,
       body: JSON.stringify({
-        user_id: '123',
+        user_id: DEVICE_ID,
         n_action: notification.n_action,
         category: notification.category,
         notification_rate: notification.notification_rate,

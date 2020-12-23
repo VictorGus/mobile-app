@@ -1,5 +1,6 @@
 import {jsonFetch, normalizeDateTime} from './Utils';
 import NotificationService from './NotificationService';
+import DEVICE_ID from "./Global";
 
 class ConditionNotificationService {
   constructor(notificationService) {
@@ -68,7 +69,7 @@ class ConditionNotificationService {
       method: 'POST',
       uri: '/condition',
       body: JSON.stringify({
-        user_id: '123',
+        user_id: DEVICE_ID,
         date_time: normalizeDateTime(new Date()),
         result: this.parseResult(notification.action),
       }),

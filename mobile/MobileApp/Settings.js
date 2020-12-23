@@ -22,6 +22,7 @@ import ConditionNotificationService from './ConditionNotificationService';
 import { Picker } from '@react-native-picker/picker';
 
 import { exractTime, normalizeDateTime, jsonFetch } from './Utils';
+import DEVICE_ID from "./Global";
 
 const SettingsScreen = () => {
     const [enableNotifications, setEnableNotifications] = React.useState(true);
@@ -50,7 +51,7 @@ const SettingsScreen = () => {
         <View>
             <View style={{
                 borderBottomWidth: 0.5,
-                padding: 12 
+                padding: 12
             }}>
                 <ToggleSwitch
                     isOn={enableNotifications}
@@ -64,7 +65,7 @@ const SettingsScreen = () => {
 
             <View style={{
                 borderBottomWidth: 0.5,
-                padding: 12 
+                padding: 12
             }}>
                 <ToggleSwitch
                     isOn={enableCondition}
@@ -167,7 +168,7 @@ const SettingsScreen = () => {
                         method: 'POST',
                         uri: '/settings',
                         body: JSON.stringify({
-                            user_id: '123',
+                            user_id: DEVICE_ID,
                             enable_condition_check: enableCondition,
                             condition_period_from: normalizeDateTime(conditionCheckTimeFrom),
                             condition_period_to: normalizeDateTime(conditionCheckTimeTo),

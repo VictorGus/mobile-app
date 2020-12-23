@@ -9,6 +9,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { jsonFetch, convertRateToMills, clearFormState, normalizeDateTime } from './Utils'
 import { InputForm } from './UtilComponents';
 import BasicNotificationService from "./BasicNotificationService";
+import DEVICE_ID from "./Global";
 // import { formatDateTime } from './Utils'
 
 function formatDateTime(date) {
@@ -404,7 +405,7 @@ const CreatedNotifications = () => {
                                     method: 'PUT',
                                     uri: '/notification/' + props.id,
                                     body: JSON.stringify({
-                                        user_id: "123",
+                                        user_id: DEVICE_ID,
                                         n_action: textInputValue != null ? textInputValue : props.textInputValue,
                                         category: pickerValue != null ? pickerValue : props.pickerValue,
                                         notification_rate: props.notificationRate != null ? String(props.notificationRate) : null,
@@ -517,7 +518,7 @@ const CreatedNotifications = () => {
                                     method: 'POST',
                                     uri: '/notification',
                                     body: JSON.stringify({
-                                        user_id: "123",
+                                        user_id: DEVICE_ID,
                                         n_action: textInputValue,
                                         category: pickerValue,
                                         notification_rate: notificationRate != null ? String(notificationRate) : null,
