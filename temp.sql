@@ -33,10 +33,7 @@ create table if not exists notification_result (id text primary key not null,
                                                 date_time timestamp,
                                                 category text,
                                                 n_result text,
-                                                CONSTRAINT fk_notification
-                                                FOREIGN KEY(notification_id)
-                                                REFERENCES notification(id)
-                                                ON DELETE SET NULL);
+                                                n_action text);
 ----
 create table if not exists settings (id text primary key not null,
                                      user_id text,

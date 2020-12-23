@@ -9,7 +9,7 @@ create table if not exists condition (id text primary key not null, user_id text
 
 create table if not exists notification (id text primary key not null, user_id text, category text, n_action text, notification_rate bigint, date_time timestamp, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES public_user(id) ON DELETE SET NULL);
 
-create table if not exists notification_result (id text primary key not null, notification_id text, category text, date_time timestamp, n_result text, CONSTRAINT fk_notification FOREIGN KEY(notification_id) REFERENCES notification(id) ON DELETE SET NULL);
+create table if not exists notification_result (id text primary key not null, notification_id text, category text, date_time timestamp, n_result text, n_action text);
 
 create table if not exists settings (id text primary key not null, user_id text, enable_achievements boolean, enable_notifications boolean, enable_md_sync boolean, sync_date_time timestamp, sync_rate bigint, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES public_user(id) ON DELETE SET NULL);
 "

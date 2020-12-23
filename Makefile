@@ -41,6 +41,12 @@ up:
 down:
 	docker-compose down
 
+postgres-up:
+	docker-compose -f docker-compose.db.yaml up -d
+
+postgres-down:
+	docker-compose -f docker-compose.db.yaml down
+
 docker-build:
 	docker build -f Dockerfile -t victor13533/mobile-backend .
 
