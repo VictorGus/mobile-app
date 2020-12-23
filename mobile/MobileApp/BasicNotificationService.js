@@ -53,14 +53,15 @@ class BasicNotificationService {
       method: 'GET',
       uri: '/notification/' + notification.channelId,
     }).then((data) => {
-      this.createNotificationResult(data, notification.action);
-      data.date_time = normalizeDateTime(new Date());
-      this.updateNotificationInfo(data);
-      if (data.notification_rate == null) {
-        this.deleteBasicNotification(data.id);
+      let notif = data.entry;
+      this.createNotificationResult(notif, notification.action);
+      notif.date_time = normalizeDateTime(new Date());
+      this.updateNotificationInfo(notif);
+      if (notif.notification_rate == null) {
+        this.deleteBasicNotification(notif.id);
         return;
       }
-      this.scheduleBasicNotification(data);
+      this.scheduleBasicNotification(notif);
     });
   }
 

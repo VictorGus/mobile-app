@@ -10,9 +10,9 @@ class ConditionNotificationService {
     this.channelId = 'condition-notification-channel';
     jsonFetch({
       method: 'GET',
-      uri: '/settings',
+      uri: '/settings/' + DEVICE_ID,
     }).then((data) => {
-      this.scheduleConditionNotification(data);
+      this.scheduleConditionNotification(data.entry);
     });
     console.log('Init condition notifications service complete');
   }
