@@ -6,12 +6,12 @@ class BasicNotificationService {
   constructor(notificationService) {
     this.notificationService = notificationService;
     this.notificationActions = ['Yes', 'No'];
-    jsonFetch({
-      method: 'GET',
-      uri: '/notification',
-    }).then((data) => {
-      this.scheduleNotifications(data.entry);
-    });
+    // jsonFetch({
+    //   method: 'GET',
+    //   uri: '/notification',
+    // }).then((data) => {
+    //   this.scheduleNotifications(data.entry);
+    // });
   }
 
   scheduleNotifications(notifications) {
@@ -86,7 +86,7 @@ class BasicNotificationService {
       uri: '/notification-result',
       body: JSON.stringify({
         notification_id: notification.id,
-        n_result: this.parseResult(action, new Date(notification.date_time)),
+        n_result: this.parseResult(action, new Date(notification.date_time.replace(" ", "T"))),
         category: notification.category,
         n_action: notification.n_action,
         date_time: normalizeDateTime(new Date()),

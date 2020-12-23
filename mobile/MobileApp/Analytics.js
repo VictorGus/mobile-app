@@ -32,7 +32,7 @@ const demoData = [
         category: "pills" 
     },
     {
-        notificationStatus: "perfomed",
+        notificationStatus: "performed",
         action: "Have a long walk in the park",
         category: "walking"
 
@@ -120,7 +120,7 @@ const data = [
       legendFontSize: 15
     },
     {
-      name: "Perfomed",
+      name: "Performed",
       amount: 52,
       color: "#4ec726",
       legendFontColor: "black",
@@ -138,7 +138,7 @@ function StatusIcon (props) {
         case "overdue":
             iconColor = '#fffc3d'
             break
-        case "perfomed":
+        case "performed":
             iconColor = '#4ec726'
             break
     }
@@ -374,7 +374,7 @@ const TodayTabChart = (props) => {
             el["legendFontColor"] = "black";
             el["legendFontSize"] = 15;
             switch(el.n_result) {
-                case "perfomed":
+                case "performed":
                     el["color"] = "#4ec726"
                     break
                 case "rejected":
@@ -424,7 +424,7 @@ const WeekTabChart = (props) => {
             el["legendFontColor"] = "black";
             el["legendFontSize"] = 15;
             switch(el.n_result) {
-                case "perfomed":
+                case "performed":
                     el["color"] = "#4ec726"
                     break
                 case "rejected":
@@ -474,7 +474,7 @@ const MonthTabChart = (props) => {
             el["legendFontColor"] = "black";
             el["legendFontSize"] = 15;
             switch(el.n_result) {
-                case "perfomed":
+                case "performed":
                     el["color"] = "#4ec726"
                     break
                 case "rejected":
@@ -524,7 +524,7 @@ const YearTabChart = (props) => {
             el["legendFontColor"] = "black";
             el["legendFontSize"] = 15;
             switch(el.n_result) {
-                case "perfomed":
+                case "performed":
                     el["color"] = "#4ec726"
                     break
                 case "rejected":
