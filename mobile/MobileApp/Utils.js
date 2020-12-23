@@ -57,11 +57,14 @@ function normalizeDateTime(date) {
         let month = '' + (date.getMonth() + 1).toString()
         let day = '' + date.getDate().toString()
         let year = date.getFullYear().toString()
-        let hour = date.getHours().toString()
-        let minute = date.getMinutes().toString()
-        let seconds = date.getSeconds().toString()
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let second = date.getSeconds();
+        let hourString = hour < 10 ? '0' + hour.toString() : hour.toString();
+        let minuteString = minute < 10 ? '0' + minute.toString() : minute.toString();
+        let secondString = second < 10 ? '0' + second.toString() : second.toString();
 
-        return [year, month, day].join('-') + " " + [hour, minute, seconds].join(':');
+        return [year, month, day].join('-') + " " + [hourString, minuteString, secondString].join(':');
     }
 }
 
