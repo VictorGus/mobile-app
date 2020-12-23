@@ -1,6 +1,7 @@
 import React from 'react';
 import { LineChart, PieChart } from "react-native-chart-kit";
 import Icon from 'react-native-vector-icons/FontAwesome'; 
+import IconFA from 'react-native-vector-icons/FontAwesome5'; 
 import { NotificationIcon } from './UtilComponents'
 import { jsonFetch, formatDateTime, extractDate, exractTime, normalizeDateTime } from './Utils'
 import {
@@ -17,6 +18,7 @@ import {
 import SegmentedControlTab from 'react-native-segmented-control-tab'
 
 import lodash from 'lodash'
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const demoData = [
     {
@@ -241,8 +243,6 @@ const WeekTab = (props) => {
             return setNotificationResults(lodash.groupBy(entry, (el) => extractDate(new Date(el.date_time))))
         })
     }, [])
-
-    console.log(notificationResults)
 
     return (
         <GridItems data={notificationResults} />
@@ -556,7 +556,6 @@ const YearTabChart = (props) => {
 }
 
 const Chart = (props) => {
-    console.log(props.params);
     switch(props.currentTab) {
         case 0: 
         return (<TodayTabChart params={props.params}/>)
@@ -637,20 +636,40 @@ const StatisticsChart = () => {
 
 const AnalyticsScreen = () => {
     const [currentTab, switchTab] = React.useState(0);
+    const netInfo = useNetInfo();
 
-    return (
+    if (netInfo.isConnected) {
+        return (
+            <View style={{
+                flex: 1
+            }}>
+                <SegmentedControlTab tabStyle={{
+                    marginTop: 20
+                }}
+                    selectedIndex={currentTab}
+                    onTabPress={switchTab}
+                    values={["Statistics", "Wellbeing"]} />
+                {currentTab === 0 ? <StatisticsChart /> : <WellbeingChart />}
+            </View>
+        )
+    } else {
+        return (
         <View style={{
-            flex: 1
-        }}>
-            <SegmentedControlTab tabStyle={{
-                marginTop: 20
-            }}
-                selectedIndex={currentTab}
-                onTabPress={switchTab}
-                values={["Statistics", "Wellbeing"]} />
-        {currentTab === 0 ? <StatisticsChart/> : <WellbeingChart/>}
-        </View>
-    )
+                position: 'absolute',
+                top: 0, left: 0,
+                right: 0, bottom: 0,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+            <IconFA name="wifi" size={48} color={"#2396d9"}/>
+            <Text style={{
+                marginTop: 20,
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: 24
+            }}> Analytics screen is not available without internet connection </Text>
+        </View>)
+    }
 }
 
 export default AnalyticsScreen;

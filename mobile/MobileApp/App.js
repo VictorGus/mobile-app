@@ -14,6 +14,8 @@ import NotificationScreen from './Notification';
 
 import AnalyticsScreen from './Analytics';
 
+import SettingsScreen from './Settings';
+
 import {
   Header,
   LearnMoreLinks,
@@ -23,22 +25,6 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { TabView, SceneMap, TabBarIndicatorProps, TabBar, TabBarItem } from 'react-native-tab-view';
-
-const AchievementsScreen = () => (
-  <View style={[styles.scene, { backgroundColor: 'white' }]}>
-    <Text style={styles.screenBody}>
-      "Текст"
-    </Text>
-  </View>
-);
-
-const SettingsScreen = () => (
-  <View style={[styles.scene, { backgroundColor: 'white' }]}>
-    <Text style={styles.screenBody}>
-      "Текст"
-    </Text>
-  </View>
-);
 
 const initialLayout = { width: Dimensions.get('window').width };
 
@@ -56,14 +42,12 @@ const App: () => React$Node = () => {
   const [routes] = React.useState([
     { key: 'notifications', title: 'Notifications' },
     { key: 'history', title: 'History' },
-    // { key: 'achievements', title: 'Achievements' },
     { key: 'settings', title: 'Settings' }
   ]);
  
   const renderScene = SceneMap({
     notifications: NotificationScreen,
     history: AnalyticsScreen,
-    achievements: AchievementsScreen,
     settings: SettingsScreen 
   });
 
