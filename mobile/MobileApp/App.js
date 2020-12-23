@@ -26,6 +26,10 @@ import {
 
 import { TabView, SceneMap, TabBarIndicatorProps, TabBar, TabBarItem } from 'react-native-tab-view';
 
+import { getUniqueId } from 'react-native-device-info';
+
+console.log(getUniqueId());
+
 const initialLayout = { width: Dimensions.get('window').width };
 
 const PUSH_NOTIFICATIONS = {}

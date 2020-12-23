@@ -96,7 +96,7 @@ class BasicNotificationService {
       return 'overdue';
     }
     if (action === 'Yes') {
-      return 'preformed';
+      return 'performed';
     }
     if (action === 'No') {
       return 'rejected';

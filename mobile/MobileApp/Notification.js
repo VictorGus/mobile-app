@@ -524,7 +524,7 @@ const CreatedNotifications = () => {
                                         date_time: normalizeDateTime(dateTimeValue)
                                     })
                                 }).then((data) => {
-                                        BasicNotificationService.scheduleBasicNotification(data);
+                                    BasicNotificationService.scheduleBasicNotification(data);
                                     }
                                 );
                                 clearFormState([setNotificationRate, setTextInputValue, setDateTime, setPickerValue]);

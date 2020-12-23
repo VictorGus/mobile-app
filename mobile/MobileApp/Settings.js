@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     dateInput: {
         borderColor: '#CCCCCC',
         borderBottomWidth: 3,
-        width: "100%",
+        width: "12%",
         marginLeft: 6,
         marginRight: 6,
         marginTop: 15,
