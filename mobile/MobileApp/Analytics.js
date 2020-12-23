@@ -42,23 +42,27 @@ const demoData = [
 const WellbeingChart = () => {
     const [currentIndex, setIndex] = React.useState(0);
 
+    const [data, setData] = React.useState([{result: 1}, {result: 1}]);
+
+    React.useEffect(() => {
+        jsonFetch({
+            method: 'GET',
+            uri: '/condition'
+        }).then((data) => {
+            let entry = data.entry;
+
+            return setData(entry) 
+        })
+    }, [])
+
     return (
         <View>
             <LineChart
                 data={{
-                    labels: ["10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
+                    labels: data.map(el => exractTime(new Date(el.date_time))),
                     datasets: [
                         {
-                            data: [
-                                6,
-                                7,
-                                6,
-                                6,
-                                2,
-                                4,
-                                7,
-                                8
-                            ]
+                            data: data.map(el => el.result)
                         }
                     ]
                 }}

@@ -54,6 +54,7 @@ class BasicNotificationService {
       uri: '/notification/' + notification.channelId,
     }).then((data) => {
       let notif = data.entry;
+
       this.createNotificationResult(notif, notification.action);
       notif.date_time = normalizeDateTime(new Date());
       this.updateNotificationInfo(notif);

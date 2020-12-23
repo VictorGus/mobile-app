@@ -54,7 +54,7 @@
   (reduce-kv
    (fn [acc k v]
      (let [{:keys [type]} (get-in entities-structure [entity :fields k])]
-       (assoc acc k (when v
+       (assoc acc k (when-not (nil? v)
                       (case type
                         "boolean"
                         (boolean (Boolean/valueOf v))
@@ -71,6 +71,7 @@
 (defn update-entity [ctx entity]
   (fn [{{:keys [id]} :params
        body          :body :as request}]
+    (println body)
     (let [body   (clojure.walk/keywordize-keys body)
           values (normalize-fields body entity)
           result (db/execute {:update entity
@@ -79,8 +80,7 @@
       (if (= result 1)
         {:status 200
          :body body}
-        {:status 404
-         :body {:message (str "Resource with id " id " is not found")}}))))
+        ((create-entity ctx entity) (assoc-in request [:body :id] id))))))
 
 (defn create-entity [ctx entity]
   (fn [{:keys [body] :as request}]

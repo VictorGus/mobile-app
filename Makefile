@@ -56,6 +56,9 @@ unlock-pgdata:
 pub:
 	docker push victor13533/mobile-backend:latest
 
+show-screen:
+	scrcpy
+
 # deployment:
 # 	kubectl apply -f ./deploy/backend.yaml && kubectl apply -f ./deploy/front-end.yaml && kubectl apply -f ./deploy/pg-cm.yaml
 

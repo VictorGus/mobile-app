@@ -32,8 +32,6 @@ console.log(getUniqueId());
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-const PUSH_NOTIFICATIONS = {}
-
 const renderTabBar = props => (
   <TabBar
     {...props}

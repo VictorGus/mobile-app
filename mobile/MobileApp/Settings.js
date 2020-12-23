@@ -47,6 +47,20 @@ const SettingsScreen = () => {
         setDatePickerVisibilityTo(true);
       };
 
+    React.useEffect(()=> {
+        jsonFetch({
+            method: 'GET',
+            uri: '/settings/' + DEVICE_ID,
+        }).then((data) => { 
+            if (data.entry != undefined) {
+                setEnableCondition(data.entry.enable_condition_check);
+                setConditionCheckTimeFrom(new Date(data.entry.condition_period_from));
+                setConditionCheckTimeTo(new Date(data.entry.condition_period_to));
+                setEnableNotifications(data.entry.enable_notifications);
+            }
+         })
+    }, [])
+
     return (
         <View>
             <View style={{
@@ -73,12 +87,12 @@ const SettingsScreen = () => {
                     label="Enable condition check"
                     labelStyle={{ color: "black", fontWeight: "900", fontSize: 18, marginRight: "22%" }}
                     size="large"
-                    onToggle={() => {
+                    onToggle={(isOn) => {
                         setEnableCondition(!enableCondition)
-                        if (enableCondition == true) {
+                    if (isOn == true) {
                             ConditionNotificationService.scheduleConditionNotification({
                                 enable_condition_check: true,
-                                notification_rate: 3600
+                                notification_rate: 30000
                             })
                         } else {
                             ConditionNotificationService.disableConditionNotification();
@@ -106,7 +120,7 @@ const SettingsScreen = () => {
                     <Picker.Item label={"Every 30 seconds"} value={30000} />
                 </Picker>
             </View>
-            <View>
+            <View style={{ }}>
                 <Text style={{
                     fontWeight: 'bold',
                     fontSize: 16
@@ -165,16 +179,16 @@ const SettingsScreen = () => {
                 />
                 <Button title="Save" onPress={() => {
                     jsonFetch({
-                        method: 'POST',
-                        uri: '/settings',
+                        method: 'PUT',
+                        uri: '/settings/' + DEVICE_ID,
                         body: JSON.stringify({
-                            user_id: DEVICE_ID,
                             enable_condition_check: enableCondition,
+                            enable_notifications: enableNotifications,
                             condition_period_from: normalizeDateTime(conditionCheckTimeFrom),
                             condition_period_to: normalizeDateTime(conditionCheckTimeTo),
                             sync_rate: conditionCheckRate
                         }),
-                    });
+                    }).then(() => alert("Successfuly saved"));
                 }} />
             </View>
         </View>
@@ -190,6 +204,7 @@ const styles = StyleSheet.create({
         marginLeft: 6,
         marginRight: 6,
         marginTop: 15,
+        marginBottom: 5,
         height: 30
     }
 })
