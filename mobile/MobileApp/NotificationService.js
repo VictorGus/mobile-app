@@ -1,6 +1,7 @@
 import PushNotification from 'react-native-push-notification';
+import { NotificationIcon } from './UtilComponents';
 
-export default class NotificationService {
+class NotificationService {
   constructor() {
     PushNotification.getApplicationIconBadgeNumber(function (number) {
       if (number > 0) {
@@ -38,3 +39,7 @@ export default class NotificationService {
     });
   }
 }
+
+const NOTIFICATION_SERVICE = new NotificationService(); 
+
+export default NOTIFICATION_SERVICE 

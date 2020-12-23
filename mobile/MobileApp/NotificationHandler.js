@@ -1,4 +1,8 @@
-export default class NotificationHandler {
+import BasicNotificationService from './BasicNotificationService'
+
+import ConditionNotificationService from './ConditionNotificationService'
+
+class NotificationHandler {
   constructor(basicNotificationService, conditionNotificationService) {
     this.basicNotificationService = basicNotificationService;
     this.conditionNotificationService = conditionNotificationService;
@@ -13,3 +17,7 @@ export default class NotificationHandler {
     this.conditionNotificationService.handleConditionNotification(notification);
   }
 }
+
+const NOTIFICATION_HANDLER = new NotificationHandler(BasicNotificationService, ConditionNotificationService);
+
+export default NOTIFICATION_HANDLER;

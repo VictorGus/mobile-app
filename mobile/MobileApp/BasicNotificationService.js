@@ -1,6 +1,7 @@
 import {jsonFetch, normalizeDateTime} from './Utils';
+import NotificationService from  './NotificationService'
 
-export default class BasicNotificationService {
+class BasicNotificationService {
   constructor(notificationService) {
     console.log('Init basic notifications service');
     this.notificationService = notificationService;
@@ -9,7 +10,6 @@ export default class BasicNotificationService {
       method: 'GET',
       uri: '/notification',
     }).then((data) => {
-      console.log(data);
       this.scheduleNotifications(data.entry);
     });
   }
@@ -99,3 +99,7 @@ export default class BasicNotificationService {
     }
   }
 }
+
+const BASIC_NOTIFICATION_SERVICE = new BasicNotificationService(NotificationService);
+
+export default BASIC_NOTIFICATION_SERVICE;

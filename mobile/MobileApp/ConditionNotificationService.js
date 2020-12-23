@@ -1,6 +1,7 @@
 import {jsonFetch, normalizeDateTime} from './Utils';
+import NotificationService from './NotificationService';
 
-export default class ConditionNotificationService {
+class ConditionNotificationService {
   constructor(notificationService) {
     console.log('Init condition notifications service');
     this.notificationService = notificationService;
@@ -17,22 +18,22 @@ export default class ConditionNotificationService {
 
   // On Create
   scheduleConditionNotification(settings) {
-    if (!settings.enable_notifications) {
+    if (!settings.enable_condition_check) {
       return;
     }
     if (!this.notificationService.channelExists(this.channelId)) {
       this.notificationService.createChannel(this.channelId);
     }
     let date;
-    if (settings.notification_rate == null) {
+    if (settings.sync_rate == null) {
       date = new Date();
       date.setSeconds(date.getSeconds() + 10);
     } else {
-      date = new Date(new Date().getTime() + settings.notification_rate);
+      date = new Date(new Date().getTime() + settings.sync_rate);
     }
     var notification = {
       id: this.channelId,
-      category: 'How do you fell?',
+      category: 'How do you feel?',
       n_action: 'Rate your current condition.',
     };
     this.notificationService.scheduleNotification(
@@ -44,6 +45,7 @@ export default class ConditionNotificationService {
 
   // On Disable
   disableConditionNotification() {
+    console.log("Disabling channel " + this.channelId);
     this.notificationService.removeChannel(this.channelId);
   }
 
@@ -54,9 +56,17 @@ export default class ConditionNotificationService {
   }
 
   handleConditionNotification(notification) {
+
+    jsonFetch({
+      method: 'GET',
+      uri: '/settings',
+    }).then((data) => {
+      this.scheduleConditionNotification(data);
+    });
+
     jsonFetch({
       method: 'POST',
-      uri: '/condition-result',
+      uri: '/condition',
       body: JSON.stringify({
         user_id: '123',
         date_time: normalizeDateTime(new Date()),
@@ -76,3 +86,7 @@ export default class ConditionNotificationService {
     return 0;
   }
 }
+
+const CONDITION_NOTIFICATION_SERVICE = new ConditionNotificationService(NotificationService);
+
+export default CONDITION_NOTIFICATION_SERVICE;

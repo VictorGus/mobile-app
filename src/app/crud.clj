@@ -27,17 +27,25 @@
                                                                      "unprocessed"]}}
                          :search-params [:id :date_from :date_to :user_id :category]}
 
-   :settings            {:fields {:id                   {:type "string"}
-                                  :user_id              {:type "string"}
-                                  :enable_achievements  {:type "boolean"}
-                                  :enable_notifications {:type "boolean"}
-                                  :enable_md_sync       {:type "boolean"}
-                                  :sync_rate            {:type "integer"}}
+   :settings            {:fields {:id                     {:type "string"}
+                                  :user_id                {:type "string"}
+                                  :enable_achievements    {:type "boolean"}
+                                  :enable_notifications   {:type "boolean"}
+                                  :enable_md_sync         {:type "boolean"}
+                                  :enable_condition_check {:type "boolean"}
+                                  :condition_period_from  {:type "date-time"}
+                                  :condition_period_to    {:type "date-time"}
+                                  :sync_rate              {:type "integer"}}
                          :search-params [:id :user_id]}
 
    :public_user         {:fields {:id                   {:type "text"}
                                   :device_id            {:type "text"}}
                          :search-params [:id :device_id]}
+
+   :condition           {:fields {:id                   {:type "text"}
+                                  :date_time            {:type "date-time"}
+                                  :result               {:type "string"}
+                                  :user_id              {:type "string"}}}
 
    :achievement {}
    })

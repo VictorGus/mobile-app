@@ -28,6 +28,8 @@ import { TabView, SceneMap, TabBarIndicatorProps, TabBar, TabBarItem } from 'rea
 
 const initialLayout = { width: Dimensions.get('window').width };
 
+const PUSH_NOTIFICATIONS = {}
+
 const renderTabBar = props => (
   <TabBar
     {...props}
