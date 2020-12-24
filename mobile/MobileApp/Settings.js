@@ -100,7 +100,10 @@ const SettingsScreen = () => {
                     }}
                 />
             </View>
-            <View>
+            <View style={{
+                borderBottomWidth: 0.5,
+                padding: 10
+            }}>
                 <Text style={{
                     fontWeight: 'bold',
                     marginBottom: 15,
@@ -120,7 +123,10 @@ const SettingsScreen = () => {
                     <Picker.Item label={"Every 30 seconds"} value={30000} />
                 </Picker>
             </View>
-            <View style={{ }}>
+            <View style={{ 
+                borderBottomWidth: 0.5,
+                padding: 10  
+                }}>
                 <Text style={{
                     fontWeight: 'bold',
                     fontSize: 16
@@ -149,7 +155,9 @@ const SettingsScreen = () => {
                     display="default"
                 />
             </View>
-            <View>
+            <View style ={{
+                padding: 10
+            }}>
                 <Text style={{
                     fontWeight: 'bold',
                     fontSize: 16
@@ -177,20 +185,20 @@ const SettingsScreen = () => {
                     is24Hour={true}
                     display="default"
                 />
-                <Button title="Save" onPress={() => {
-                    jsonFetch({
-                        method: 'PUT',
-                        uri: '/settings/' + DEVICE_ID,
-                        body: JSON.stringify({
-                            enable_condition_check: enableCondition,
-                            enable_notifications: enableNotifications,
-                            condition_period_from: normalizeDateTime(conditionCheckTimeFrom),
-                            condition_period_to: normalizeDateTime(conditionCheckTimeTo),
-                            sync_rate: conditionCheckRate
-                        }),
-                    }).then(() => alert("Successfuly saved"));
-                }} />
             </View>
+            <Button title="Save" onPress={() => {
+                jsonFetch({
+                    method: 'PUT',
+                    uri: '/settings/' + DEVICE_ID,
+                    body: JSON.stringify({
+                        enable_condition_check: enableCondition,
+                        enable_notifications: enableNotifications,
+                        condition_period_from: normalizeDateTime(conditionCheckTimeFrom),
+                        condition_period_to: normalizeDateTime(conditionCheckTimeTo),
+                        sync_rate: conditionCheckRate
+                    }),
+                }).then(() => alert("Successfuly saved"));
+            }} />
         </View>
     )
 }
@@ -200,12 +208,18 @@ const styles = StyleSheet.create({
     dateInput: {
         borderColor: '#CCCCCC',
         borderBottomWidth: 3,
-        width: "12%",
+        width: "15%",
         marginLeft: 6,
         marginRight: 6,
         marginTop: 15,
         marginBottom: 5,
         height: 30
+    },
+    textInput: {
+        borderColor: '#CCCCCC',
+        borderBottomWidth: 3,
+        width: "70%",
+        fontSize: 18,
     }
 })
 
