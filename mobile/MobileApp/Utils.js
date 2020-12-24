@@ -88,7 +88,7 @@ async function jsonFetch (query) {
         connection.type = state.type;
     })
 
-    return await fetch('http://192.168.0.104:9090' + uri, query)
+    return await fetch('http://ec2-3-9-239-1.eu-west-2.compute.amazonaws.com' + uri, query)
         .then((response) => response.json())
         .then((json) => {
             return json;
