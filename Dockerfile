@@ -1,10 +1,10 @@
 FROM openjdk:11-jre
-ENV PGPORT     = 5443
-ENV PGHOST     = ec2-3-9-239-1.eu-west-2.compute.amazonaws.com
-ENV PGUSER     = postgres
-ENV PGDATABASE = mobiledb
-ENV PGPASSWORD = postgres
-ENV PGIMAGE    = postgres:latest
+ENV PGPORT 5432
+ENV PGHOST database.cqwpiwzeijs3.eu-west-2.rds.amazonaws.com
+ENV PGUSER team2user
+ENV PGDATABASE project
+ENV PGPASSWORD jw8s0F4
+ENV PORT 9090
 
 ADD app.jar /app.jar
 

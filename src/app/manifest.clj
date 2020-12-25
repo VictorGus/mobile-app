@@ -6,4 +6,4 @@
         :user     (or (System/getenv "PGUSER")     "postgres")
         :password (or (System/getenv "PGPASSWORD") "postgres")
         :dbname   (or (System/getenv "PGDATABASE") "mobiledb")}
-   :app {:port    (or (System/getenv "APP_PORT") 9090)}})
+   :app {:port    (or (System/getenv "PORT") 9090)}})
